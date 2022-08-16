@@ -121,4 +121,10 @@ def program2_15():
     price -= (price * .2)
     print("The sale price is", price)
     
+def program2_16():
+    #get first test score
+    #get second test score
+    #get thirsd score
+    #calc average
+    
     
