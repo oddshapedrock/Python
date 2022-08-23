@@ -120,7 +120,10 @@ def temp_converter():
     
     #output fahrenheit
     print(format(tempCelsius, ".0f"), "degrees celsius is", fahrenheit, "degrees fahrenheit")
-    
+
+#cookie_monster accepts no arguments
+#calculates the needed ingredients based on the amount of cookies
+#returns amount of each ingredient in cups and oz
 def cookie_monster():
     #prompt for cookie amount
     cookieAmount = float(input("How many cookies do you want to make? : "))
