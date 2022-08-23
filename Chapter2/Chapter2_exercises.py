@@ -219,6 +219,8 @@ def tortuga_2():
     tur.pensize(4)
     
     #square
+    tur.color('black', 'red')
+    tur.begin_fill()
     tur.penup()
     tur.goto(50*3, 50*3)
     tur.pendown()
@@ -226,61 +228,97 @@ def tortuga_2():
     tur.goto(-50*3, -70*3)
     tur.goto(50*3, -70*3)
     tur.goto(50*3, 50*3)
+    tur.end_fill()
     
-    #trap
+    #trapazoid
+    tur.begin_fill()
     tur.goto(130*3, 30*3)
     tur.goto(130*3, -50*3)
     tur.goto(50*3, -70*3)
+    tur.end_fill()
     
     #roof triangle
+    tur.color('black', '#964B00')
     tur.penup()
     tur.goto(50*3, 50*3)
     tur.pendown()
+    tur.begin_fill()
     tur.goto(0*3, 110*3)
     tur.goto(-50*3, 50*3)
+    tur.end_fill()
     
     #roof end
+    tur.begin_fill()
     tur.goto(0*3, 110*3)
     tur.goto(105*3, 60*3)
     tur.goto(130*3, 30*3)
+    tur.goto(50*3, 50*3)
+    tur.goto(0*3, 110*3)
+    tur.end_fill()
     
     tur.done()
     
 #tortuga_3 accepts no arguments
 #olympics logo
 #returns image of olympics logo
-#just trying to get it as close as possible and testing some things out Unfinished
+#just trying to get it as close as possible including space gaps
 def tortuga_3():
     tur.setup(500,500)
     tur.hideturtle()
     tur.pensize(8)
     tur.speed(0)
+    tur.goto(0, 0)
     
+    #makes a skip space slightly wider than the line width
     def skip():
         tur.penup()
         tur.circle(50, 30)
         tur.pendown()
+    #middle black circle
     skip()
-    tur.circle(50, 255)
+    tur.circle(50, 230)
     skip()
-    tur.circle(50, 45)
-    
+    tur.circle(50, 70)
+    #move to spot for green circle
     tur.penup()
     tur.goto(60, -50)
     tur.pendown()
-    
-    tur.circle(50, 70)
+    #color to green and draw green circle
+    tur.color("#179a13")
+    tur.circle(50, 75)
     skip()
-    tur.circle(50, 80)
+    tur.circle(50, 75)
     skip()
     tur.circle(50, 180)
-    
+    #move to red circle spot
     tur.penup()
-    tur.goto(140, 0)
+    tur.goto(140, 7)
     tur.pendown()
-    
-    tur.circle(50, 220)
+    #set color to red and draw red circle
+    tur.color("red")
+    tur.circle(50, 225)
     skip()
     tur.circle(50, 180)
+    #move to spot for yellow circle
+    tur.penup()
+    tur.goto(-10, 10)
+    tur.pendown()
+    #collor to yellow and draw yellow circle
+    tur.color("#ffce01")
+    skip()
+    tur.circle(50, 50)
+    skip()
+    tur.circle(50, 225)
+    skip()
+    tur.circle(50, 23)
+    #move to blue circle spot
+    tur.penup()
+    tur.goto(-85, 83)
+    tur.pendown()
+    #color to blue and draw blue circle
+    tur.color("#3e76ec")
+    tur.circle(50, 230)
+    skip()
+    tur.circle(50, 97)
     
     tur.done()
