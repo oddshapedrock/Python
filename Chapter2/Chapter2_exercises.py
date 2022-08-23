@@ -1,3 +1,4 @@
+import turtle as tur
 #personal_info accepts no arguments
 #it prints out personal information
 #returns my personal information
@@ -126,19 +127,160 @@ def cookie_monster():
     cookieCups = []
     cookieOz = []
     #amount per cookie
-    COOKIE = [.5, .3333, .9166]
+    COOKIE = [.5, .3333, .9166] #[sugar butter flour]
+    #loops through cookie multiplies each number by cookie amount then divides into cups and oz
     for ingredient in COOKIE:
         ingredient = ingredient * cookieAmount
         cookieCups.append(int(format(ingredient, ".0f")) // 8)
         cookieOz.append(int(format(ingredient, ".0f")) % 8)
 
+    #sugar
     sugarCups = cookieCups[0]
     sugarOz = cookieOz[0]
-    
+    #butter
     butterCups = cookieCups[1]
     butterOz = cookieOz[1]
-    
+    #flour
     flourCups = cookieCups[2]
     flourOz = cookieOz[2]
 
-    print(COOKIE, sugarCups)
+    #outpur amounts 
+    print("For", cookieAmount, "cookies you will need:")
+    print(sugarCups, "cup(s)", sugarOz, "ounces of suggar.")
+    print(butterCups, "cup(s)", butterOz, "ounces of butter")
+    print(flourCups, "cup(s)", flourOz, "ounces of flour")
+
+#class_demographics accepts no arguments
+#takes the famales and males to calculate thier percentages
+#returns the percentages of the class demographics
+def class_demographics():
+    females = float(input("Enter the number of females: "))
+    males = float(input("Enter the number of Males: "))
+    total = males + females
+    malePercent = format(males / total * 100, "0.0f")
+    femalePercent = format(females / total * 100, "0.0f")
+    print("The class consists of", femalePercent +  "% females and", malePercent + "% males.")
+
+#tortuga_1 accepts no arguments
+#makes a compas
+#returns image of compas
+def tortuga_1():
+    #setup
+    tur.setup(500, 500)
+    tur.hideturtle()
+    tur.pensize(4)
+    
+    def flip():
+        tur.left(180)
+    def orgin():
+        tur.goto(0, 0)
+    #creates line through origin with distance argument
+    def line(dist):
+        orgin()
+        tur.forward(dist)
+        orgin()
+        flip()
+        tur.forward(dist)
+        flip()
+    
+    #writes given letter at given location
+    def letter(loc, letter):
+        tur.goto(loc)
+        tur.write(letter, font=("arial", 16))
+    
+    #biglines
+    line(100)
+    tur.setheading(90)
+    line(100)
+    #smalllines
+    tur.setheading(45)
+    tur.pensize(2)
+    line(70)
+    tur.setheading(135)
+    line(70)
+    
+    #writes the letters
+    tur.penup()
+    letter((-6, 105), "N")
+    letter((-6, -127), "S")
+    letter((110, -10), "E")
+    letter((-125, -10), "W")
+    
+    
+    tur.done()
+
+#tortuga_2 accepts no arguments
+#draws house
+#returns image of house
+def tortuga_2():
+    #setup
+    tur.setup(800, 800)
+    tur.hideturtle()
+    tur.pensize(4)
+    
+    #square
+    tur.penup()
+    tur.goto(50*3, 50*3)
+    tur.pendown()
+    tur.goto(-50*3, 50*3)
+    tur.goto(-50*3, -70*3)
+    tur.goto(50*3, -70*3)
+    tur.goto(50*3, 50*3)
+    
+    #trap
+    tur.goto(130*3, 30*3)
+    tur.goto(130*3, -50*3)
+    tur.goto(50*3, -70*3)
+    
+    #roof triangle
+    tur.penup()
+    tur.goto(50*3, 50*3)
+    tur.pendown()
+    tur.goto(0*3, 110*3)
+    tur.goto(-50*3, 50*3)
+    
+    #roof end
+    tur.goto(0*3, 110*3)
+    tur.goto(105*3, 60*3)
+    tur.goto(130*3, 30*3)
+    
+    tur.done()
+    
+#tortuga_3 accepts no arguments
+#olympics logo
+#returns image of olympics logo
+#just trying to get it as close as possible and testing some things out Unfinished
+def tortuga_3():
+    tur.setup(500,500)
+    tur.hideturtle()
+    tur.pensize(8)
+    tur.speed(0)
+    
+    def skip():
+        tur.penup()
+        tur.circle(50, 30)
+        tur.pendown()
+    skip()
+    tur.circle(50, 255)
+    skip()
+    tur.circle(50, 45)
+    
+    tur.penup()
+    tur.goto(60, -50)
+    tur.pendown()
+    
+    tur.circle(50, 70)
+    skip()
+    tur.circle(50, 80)
+    skip()
+    tur.circle(50, 180)
+    
+    tur.penup()
+    tur.goto(140, 0)
+    tur.pendown()
+    
+    tur.circle(50, 220)
+    skip()
+    tur.circle(50, 180)
+    
+    tur.done()
