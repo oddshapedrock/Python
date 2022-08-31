@@ -305,7 +305,7 @@ def hit_the_target_mod():
 
 	
 	#to hit 63.45 <= angle <= 70
-	#to hit middle about 66.67, 9.5
+	#to hit middle about 66.61, 9.5
 	#to hit 9. <= force <= 10
 	
 	
