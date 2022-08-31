@@ -1,4 +1,48 @@
 import turtle as tur
+#<program_name> accepts ____ arguments
+#it <what does it do>
+#it <what does it output or return>
+
+#day_converter accepts no arguments
+#it prompts the user for a number 1-7
+#error message for numbers outside 1-7
+#outputs the corresponding day of the week in spanish
+def day_converter():
+    #user input prompt
+    numberInput = int(input("Enter a number 1-7: "))
+    #checks if number is in range
+    if (numberInput < 1 or numberInput > 7):
+        print("Error: Number is out of 1-7 range")
+    #days of the week in order
+    spanishDays = ["Lunes", "Martes", "Miércoles",
+                   "Jueves", "Viernes", "Sábado", "Domingo"]
+    #output day of the week
+    print("The day of the week is", spanishDays[numberInput - 1]) #offsets input to start at 0
+
+#roman_numerals accepts no arguments
+#it prompts the user for a number 1-10
+#converts the number to roman numerals
+#outputs new roman numeral number
+def roman_numerals():
+    number = int(input("Enter a number 1-10: "))
+    #initialize numeral var
+    numeral = ""
+    #checks if number is in range
+    if (number < 1 or number > 10):
+        return print("Error: Number is out of 1-10 range")
+
+    if number < 4:
+        numeral = "I" * number #for 1-3 types I number times
+    elif number == 4:
+        numeral = "IV"
+    elif number > 4 and number < 9:
+        numeral = "V" + ("I" * (number - 5))
+    elif number == 9:
+        numeral = "IX"
+    else:
+        numeral = "X"
+        
+    print(numeral)
 
 #color_mixer takes no arguments
 #takes a user input red, blue, or yellow
@@ -49,7 +93,7 @@ def color_mixer():
 #calculates the number of hotdog and bun packages needed
 #returns the needed amount of packages and the left overs
 def hot_dog():
-	#number of product in a pack
+    #number of product in a pack
 	HOTDOGS = 10
 	BUNS = 8
 
@@ -189,45 +233,6 @@ def can_we_just_eat():
 	print("Corner Café")
 	print("The Chef's Kitchen")
 	
-#can_we_just_eat_2 takes no arguments
-#same thing as can_we_just_eat excpet not with the if loop logic you were likely looking for
-#this one can be expanded upon easily just by adding restraunts to the list
-#asks whether party members are vegitarian, vegan, or glutrn-free
-#returns the possible resturaunts you can eat at
-def can_we_just_eat_2():
-	#temporary list place holder
-	listOfAlergies = []
-	
-	#check takes two arguments (user input) and (name ex vegetarian or vegan)
-	#checks if input is a yes or no
-	#if yes appends name to listOfAlergies if no continues
-	def check(userInput, name):
-		if userInput.lower() == "yes":
-			listOfAlergies.append(name)		
-	
-	#prompts user and checks checks if user said yes to any prompt
-	check(input("is anyone in your party a vegetarian? (yes/no) : "), "vegitarian")
-	check(input("is anyone in your party a vegan? (yes/no) : "), "vegan")
-	check(input("is anyone in your party gluten intolerant? (yes/no) : "), "Gluten-free")
-	print()
-	
-	#dictionary of all the restraunts and the alergies they cater to
-	restraunts = [{"name": "Joe's Gormet Burgers", "vegitarian": False, "vegan": False, "Gluten-free": False},
-				 {"name": "Main Street Pizza Company", "vegitarian": True, "vegan": False, "Gluten-free": True},
-				 {"name": "Corner Café", "vegitarian": True, "vegan": True, "Gluten-free": True},
-				 {"name": "Mama's Fine Italian", "vegitarian": True, "vegan": False, "Gluten-free": False},
-				 {"name": "The Chef's Kitchen", "vegitarian": True, "vegan": True, "Gluten-free": True},]
-	
-	#for every allergy filters the list of restraunts to only those who cater to that alergy
-	for x in range(0, len(listOfAlergies)):
-		spot = listOfAlergies[x]
-		restraunts = list(filter(lambda x : x[spot] == True, restraunts))
-	
-	#output restraunt names
-	print("Hers are your restaurant choices: ")
-	for restraunt in restraunts:
-		print(restraunt["name"])
-
 #hit_the_target_mod takes no arguments
 #takes a user input for angle and force
 #moves the turtle based on the angle and force to see if it is inside the target
