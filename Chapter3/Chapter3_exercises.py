@@ -3,6 +3,8 @@ import turtle as tur
 #it <what does it do>
 #it <what does it output or return>
 
+# hot dog time
+
 #day_converter accepts no arguments
 #it prompts the user for a number 1-7
 #error message for numbers outside 1-7
@@ -12,7 +14,7 @@ def day_converter():
     numberInput = int(input("Enter a number 1-7: "))
     #checks if number is in range
     if (numberInput < 1 or numberInput > 7):
-        print("Error: Number is out of 1-7 range")
+        return print("Error: Number is out of 1-7 range")
     #days of the week in order
     spanishDays = ["Lunes", "Martes", "Miércoles",
                    "Jueves", "Viernes", "Sábado", "Domingo"]
@@ -36,7 +38,7 @@ def roman_numerals():
     elif number == 4:
         numeral = "IV"
     elif number > 4 and number < 9:
-        numeral = "V" + ("I" * (number - 5))
+        numeral = "V" + ("I" * (number - 5)) #for every number 6-9 takes v and adds an I
     elif number == 9:
         numeral = "IX"
     else:
@@ -79,6 +81,9 @@ def color_mixer():
 				if c2 == "yellow":
 					#blue + yellow
 					return "green"
+				if c2 == "red":
+					#flips the input of the colors to cycle all posible arangements
+					return "purple"
 			else:
 				#flips the input of the colors to cycle all posible arangements
 				return mixer(c2, c1)
@@ -100,19 +105,21 @@ def hot_dog():
 	#user input #of people
 	numPeople = float(input("How many people will be attending your party? : "))
 	
+	numHotdogsPerson = float(input("How many hotdogs a person? : "))
+	
 	#calculates the number of people divided by the amount in a package. +1 if their is a remainder
-	hotDogPackages =  (numPeople // HOTDOGS) + (numPeople % HOTDOGS > 0) #numPeople % HOTDOGS > 0 == True -> # + True == number + 1
-	bunPackages =  (numPeople // BUNS) + (numPeople % BUNS > 0)
+	hotDogPackages =  (numPeople * numHotdogsPerson // HOTDOGS) + (numPeople * numHotdogsPerson % HOTDOGS > 0) #numPeople % HOTDOGS > 0 == True -> # + True == number + 1
+	bunPackages =  (numPeople * numHotdogsPerson // BUNS) + (numPeople % BUNS > 0)
 	
 	#gets the total amount of product and subtracts the amount of people
-	leftOverHotDogs = hotDogPackages * HOTDOGS - numPeople
-	leftOverBuns = bunPackages * BUNS - numPeople
+	leftOverHotDogs = hotDogPackages * HOTDOGS - numPeople * numHotdogsPerson
+	leftOverBuns = bunPackages * BUNS - numPeople * numHotdogsPerson
 	
 	#output packages and leftovers
 	print("You need", format(hotDogPackages, "0.0f"), "packages of hotdogs.")
 	print("You need", format(bunPackages, "0.0f"), "packages of buns.")
-	print("You will have", leftOverHotDogs, "hotdogs left over.")
-	print("You will have", leftOverBuns, "buns left over.")
+	print("You will have", format(leftOverHotDogs, "0.0f"), "hotdogs left over.")
+	print("You will have", format(leftOverBuns, "0.0f"), "buns left over.")
 	
 #time_calculator accepts no arguments
 #takes a user inputed number of seconds and calculates in the format of days, hours, minutes, seconds.
@@ -122,13 +129,13 @@ def time_calculator():
 	userSeconds = int(input("Enter a time in seconds: "))
 	
 	#gets turns seconds to days
-	days = userSeconds // 8640
+	days = userSeconds // 86400
 	#turns what is leftover to hours
-	hours = (userSeconds % 8640) // 3600
+	hours = (userSeconds % 86400) // 3600
 	#turns what is left over to minutes
-	minutes = ((userSeconds % 8640) % 3600) // 60
+	minutes = ((userSeconds % 86400) % 3600) // 60
 	#turns what is left over into seconds
-	seconds = ((userSeconds % 6840) % 3600) % 60 
+	seconds = ((userSeconds % 68400) % 3600) % 60 
 	
 	
 	#outputs with the first non zero time frame.
@@ -223,6 +230,7 @@ def can_we_just_eat():
 	if check(input("is anyone in your party gluten intolerant? (yes/no) : ")):
 		gluten = True
 	
+	#output the restraunt choices
 	print("Here are your restaurant choices: ")
 	if (not vegi and not vegan and not gluten):
 		print("Joe's Gormet Burgers")
@@ -291,16 +299,19 @@ def hit_the_target_mod():
 	turX = tur.xcor()
 	turY = tur.ycor()
 
+    #checks if the player hit the target
 	if (turX >= TARGET_LLEFT_X and turX <= TARGET_LLEFT_X + TARGET_WIDTH
 	   and turY >= TARGET_LLEFT_Y and turY <= TARGET_LLEFT_Y + TARGET_WIDTH):
 		print("hit")
 	else:
 		print("miss")
+		#helps the player hit the target
+		#checks if angle is in range
 		if angle < 63.45:
 			print("Try increasing your angle")
 		elif angle > 70:
 			print("Try decreasing your angle")
-
+        #checks if player went past the lines
 		elif angle >= 63.45 and angle <= 70:
 			if(turX > TARGET_LLEFT_X + TARGET_WIDTH or turY > TARGET_LLEFT_Y + TARGET_WIDTH):
 				print("Try decreasing your force")
