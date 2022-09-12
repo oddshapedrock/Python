@@ -160,6 +160,7 @@ def stair_pattern2():
 #makes squares in side of squares
 #outputs squares in turtle
 def repeating_squares():
+    #turtle setup
     tur.ht()
     tur.delay(0)
     tur.speed(0)
@@ -171,9 +172,41 @@ def repeating_squares():
         numSquare = int(input("Enter the number of squares: "))
     #drawSquare takes one argument (square size)
     #draws a square based on the size in turtle
-    def drawSquare():
-        print()
+    def drawSquare(size):
+        #calculates turtle square size
+        distance = 10 + (5 * size)
+        #draws a square
+        for rot in range(4):
+            tur.left(90)
+            tur.forward(distance)
+    #creates an offset to center image
+    offset = ((numSquare * 5) + 10 ) /2
+    tur.penup()
+    tur.goto(offset, -offset)
+    tur.pendown()
     #main loop
-    for square in range(0, numSquare)
+    for square in range(0, numSquare):
+        #calls draw square function with square size
         drawSquare(square)
-        numSquare -= 1
+    tur.done()
+
+#hypnotic_pattern takes no arguments
+#makes a spiral pattern
+#outputs pattern in turtle
+def hypnotic_pattern():
+    #turtle set up
+    tur.ht()
+    tur.delay(0)
+    tur.speed(0)
+    tur.left(90)
+    #user input
+    distance = int(input("Enter the distance (amount of turns): "))
+    #input validation
+    while distance < 0:
+        print("Distance can not be a negative number.")
+        distance = int(input("Enter the distance (amount of turns): "))
+    #main loop draws spiral
+    for turn in range(1,distance+2): #distance +2 to account for first iteration not creating a corner
+        tur.forward(turn*3)
+        tur.left(90)
+    tur.done()
