@@ -1,3 +1,5 @@
+from random import randint as random
+
 #message accepts no arguments
 #prints line I am iron man
 def message():
@@ -171,14 +173,160 @@ def pay_me():
     #prompts gross pay
     #calls show pay, passes gross
     #calls show bonus, passing bonus
-    pay = float(input("Enter Your gross pay"))
+    pay = float(input("Enter Your gross pay: "))
+    bonus = float(input("Enter Your bonus pay: "))
+    print()
+    #calls a functoins
+    show_pay(pay)
+    show_bonus(bonus)
     
 def show_pay(gross):
     #accepts float for gross
     #calculates teh contribution = gross * constant
     #it outputs the contibution from gross pay
+    contribution = gross * CONTRIBUTION_RATE
+    print("Contribution for gross pay: $" + format(contribution, "0.2f"))
 
 def show_bonus(bonus):
     #takes a float for bonus
     #contribution = bonus * global constant
     #outputs the contibution
+    contribution = bonus * CONTRIBUTION_RATE
+    print("Contribution for bonuses: $" + format(contribution, "0.2f"))
+    
+# --------------------------------------------------------------------------------------------
+def random_numbers():
+    #accepts no arguments
+    #generates random int 1-10
+    #outputs number
+    print("The random number is", random(1,10))
+    
+# --------------------------------------------------------------------------------------------
+def random_numbers2():
+    #accepts no arguments
+    #generates random int 1-100 5 times
+    #outputs number
+    for x in range(5):
+        number = random(1,100)
+        print(number)
+        
+# --------------------------------------------------------------------------------------------
+def random_numbers3():
+    #accepts no arguments
+    #generates random int 1-100 5 times
+    #outputs number
+    for x in range(5):
+        print(random(1,100))
+        
+# --------------------------------------------------------------------------------------------
+#dice accepts no arguments
+#loops two dice rolls until the user states no
+def dice():
+    #main loop
+    while 1:
+        #output
+        print("Rolling your dice...")
+        print("Your two dice are", random(1, 6), "and", random(1,6))
+        print()
+        #get user input
+        prompt = input("Try your luck again? (y/n): ").lower()
+        #checks input and breaks loop
+        if prompt != "y":
+            break
+        
+# --------------------------------------------------------------------------------------------
+#accpets no arguments
+#outputs random heads or tails 10 times
+def coin_toss():
+    #possible outputs
+    options = ["Heads!", "Tails!"]
+    #main loop
+    for toss in range(10):
+        #output
+        print(options[random(0, 1)])
+        
+# --------------------------------------------------------------------------------------------
+def test_random():
+    start = [0,0,0,0,0,0,0,0,0,0,0]
+    for x in range(1000000):
+        lis = range(0,11)
+        number = random(0,10)
+        start[number] += 1
+    print (start)
+    
+# --------------------------------------------------------------------------------------------
+def total_ages():
+    #gets user iput
+    age1 = int(input("Please enter your age: "))
+    age2 = int(input("Please enter the age of your best friend: "))
+    
+    total = calculate_ages(age1, age2)
+    print("\ntogether you are", total, "years old.")
+    
+def calculate_ages(age1, age2):
+    #adds and returns ages
+    total_ages = age1 + age2
+    return total_ages
+
+# --------------------------------------------------------------------------------------------
+#global constant
+DISCOUNT_PERCENT = 0.2
+#accpets no arguments
+#calculates the sale price
+#outputs the sale price
+def sale_price():
+    #creates the sale price
+    salePrice = regular_price - discount(get_regular_price())
+    #output
+    print("The sale price was", format(salePrice, "0.2f"))
+
+#accepts no argumetns
+#returns value of user input
+def get_regular_price():
+    return int(input("What was the regular price of the item: "))
+    
+#accepts one argument (price)
+#returns discount
+def discount(price):
+    return price * DISCOUNT_PERCENT
+
+# --------------------------------------------------------------------------------------------
+def commission_rate():
+    #accepts no arguments
+    #calculates the pay and outputs pay
+    #determines if pay is negative (must reimberse)
+    sales = get_sales()
+    advancedPay = get_advanced_pay()
+    commRate = determine_comm_rate(sales)
+    pay = (sales * commRate) - advancedPay
+    #checks if payed or owed
+    if pay < 0:
+        print("You owe the company $" + str(-1 * pay))
+    else:
+        print("You made $" + format(pay, "0.2f"))
+
+def get_sales():
+    #accepts no arguments
+    #it promts the user for monthly sales
+    #and returns the monthly sales
+    sales = float(input("What are your total monthly sales? :"))
+    return sales
+    
+def get_advanced_pay():
+    #accepts no arguments
+    #promts user to enter any advanced pay, or 0 for none
+    #returns the advanced pay
+    advancedPay = float(input("How much advanced pay did you get? : "))
+    return advancedPay
+    
+def determine_comm_rate(sales):
+    #accepts a float for sales
+    #calculates commision rate for sales
+    #returns commision rate        
+    i = 0
+    rates = [10000, 14999.01, 17999.01, 21999.01] #commission caps
+    for percent in range(10, 18, 2):
+        if sales < rates[i]:
+            return percent/100
+        i += 1
+    return .18
