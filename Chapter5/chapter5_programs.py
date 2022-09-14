@@ -1,4 +1,9 @@
 from random import randint as random
+import turtle
+from math import sqrt, hypot
+import circle
+import rectangle
+import my_graphics as graph
 
 #message accepts no arguments
 #prints line I am iron man
@@ -330,3 +335,79 @@ def determine_comm_rate(sales):
             return percent/100
         i += 1
     return .18
+
+# ------------------------------------------------------------------------------
+def get_name():
+    name = input("Please enter your name: ")
+    return name
+
+def validate_even(num):
+    if (num % 2) == 0:
+        return True
+    else:
+        return False
+    
+def nameIsEven():
+    name = get_name()
+    isEven = validate_even(len(name))
+    if isEven:
+        print("Your name has an even number of letters.")
+    else:
+        print("Your name has an odd number of letters.")
+
+# ------------------------------------------------------------------------------
+def getName2():
+    firstName = input("Please enter your first name: ")
+    lastName = input("Please enter your last name: ")
+    return firstName, lastName
+    
+def printName():
+    firstName, lastName = getName2()
+    print(firstName, lastName)
+
+# ------------------------------------------------------------------------------
+def squareRoot():
+    number = int(input("Please enter a value: "))
+    print("The square root of", number, "is", sqrt(number))
+    
+# ------------------------------------------------------------------------------
+def hypotenuse():
+    numberA = int(input("Please enter A value: "))
+    numberB = int(input("Please enter B value: "))
+    print("The length of the hypotenuse is: ", hypot(numberA, numberB))
+# ------------------------------------------------------------------------------
+def thing():
+    print(circle.area(5))
+    print(rectangle.area(5,5))
+# ------------------------------------------------------------------------------
+def test():
+    num1, num2, num3, num4, num5 = range(1, 6)
+    print(num2)
+    
+# ------------------------------------------------------------------------------
+def drawTriangle():
+    TOP_X = 0
+    TOP_Y = 100
+    BASE_LEFT_X = -100
+    BASE_LEFT_Y = -100
+    BASE_RIGHT_X = 100
+    BASE_RIGHT_Y = -100
+    graph.line(TOP_X, TOP_Y, BASE_LEFT_X, BASE_LEFT_Y, 'red')
+    graph.line(TOP_X, TOP_Y, BASE_RIGHT_X, BASE_RIGHT_Y, 'blue')
+    graph.line(BASE_LEFT_X, BASE_LEFT_Y, BASE_RIGHT_X, BASE_RIGHT_Y, "green")
+    
+def graphic_fun():
+    x1 = 0
+    y1 = x3 = 100 
+    x2 = y2 = y3 = -100
+    radius = 50
+    
+    graph.square(x2, y2, 200, 'gray')
+    graph.circle(x2, y2, radius, 'red')
+    graph.circle(x1, y1, radius, 'blue')
+    graph.circle(x3, y3, radius, 'green')
+    graph.line(x1, y1, x2, y2, 'black')
+    graph.line(x2, y2, x3, y3, 'black')
+    graph.line(x3, y3, x1, y1, 'black')
+    
+    turtle.done()
