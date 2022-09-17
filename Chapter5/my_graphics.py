@@ -31,3 +31,18 @@ def line(startX, startY, endX, endY, color):
     turtle.pendown()
     turtle.pencolor(color)
     turtle.goto(endX, endY)
+    
+#accpets argumetns (x, pos, y pos, width, height, and color)
+#draws a rectangle
+def rectangle(x, y, width, height, color):
+    turtle.penup()
+    turtle.goto(x, y)
+    turtle.fillcolor(color)
+    turtle.pendown()
+    turtle.begin_fill()
+    for count in range(2):
+        turtle.forward(width)
+        turtle.left(90)
+        turtle.forward(height)
+        turtle.left(90)
+    turtle.end_fill()
