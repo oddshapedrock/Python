@@ -320,7 +320,7 @@ def determine_winner(computer, playerChoice):
         print("Computer Wins! You entered an invalid weapon! Cheater!")
         return
     #all the possible sayings for each win condition. Ordered Winner choice -> loser choice
-    slogans = {"paper":{"rock":"Paper covers rock.", "spock":"paper disaproves spock."},\
+    slogans = {"paper":{"rock":"Paper covers rock.", "spock":"paper disproves spock."},\
                "lizard":{"paper":"Lizard eats paper.", "spock":"lizard poisons Spock."},\
                "scissors":{"paper":"Scissors cuts paper.", "lizard":"Scissors decapitates lizard."},\
                "rock":{"lizard":"Rock crushes lizard", "scissors":"Rock crushes scissors"},\
@@ -476,6 +476,7 @@ def animation(snowflakes):
         #checks if keyboard key is pressed (q)
         #stops the loop if true
         if keyboard.is_pressed("q"):
+            turtle.done()
             break
         #iterates through each snowflake calls drawSnowflake
         #then changes its poition
@@ -554,8 +555,19 @@ def drawGround():
     turtle.setheading(0)
     turtle.pencolor("black")
 
-turtle.done()
 
 # ----------------------------------------------------------------------------------------------- #
 # ----------------------------------------------------------------------------------------------- #
 # ----------------------------------------------------------------------------------------------- #
+#checkerboard takes no arguments
+def checkerboard():
+    isBlack = True
+    for x in range(5):
+        for y in range(5):
+            if isBlack:
+                my_graphics.square((x * 30) - 75, (y * 30) - 75, 30, "BLACK")
+                isBlack = False
+            else:
+                my_graphics.square((x * 30) - 75, (y * 30) - 75, 30, "WHITE")
+                isBlack = True
+    
