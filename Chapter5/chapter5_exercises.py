@@ -241,8 +241,7 @@ def get_numbers():
     #return larger number first then smaller number then total
     if num1 > num2:
         return num1, num2, total
-    else:
-        return num2, num1, total
+    return num2, num1, total
     
 # ----------------------------------------------------------------------------------------------- #
 #time_loop takes no arguments
@@ -560,13 +559,18 @@ def drawGround():
 # ----------------------------------------------------------------------------------------------- #
 # ----------------------------------------------------------------------------------------------- #
 #checkerboard takes no arguments
+#chekcerboard makes a checkerboard
+#outputs the checkerboard in turtle
 def checkerboard():
     isBlack = True
+    #5x5 grid
     for x in range(5):
         for y in range(5):
+            #black square
             if isBlack:
                 my_graphics.square((x * 30) - 75, (y * 30) - 75, 30, "BLACK")
                 isBlack = False
+            #white square
             else:
                 my_graphics.square((x * 30) - 75, (y * 30) - 75, 30, "WHITE")
                 isBlack = True
