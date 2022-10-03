@@ -231,18 +231,231 @@ def golf_write():
 #creates the html for a simple web page
 #writes the html to a file
 def web_page():
+    #gets the name
     name = input("Enter your name(first, last): ")
     splitName = name.split()
+    #ensures they entered both a first and last name
     while not len(splitName) == 2:
         print("Only enter a First and Last Name.\nBoth are required!")
         name = input("Enter your name(first, last): ")
         splitName = name.split()
+    #gets the users sentence
     sentence = input("Write a description of yourself: ")
     
+    #try to create a new file
     try:
         file = open(f"{name}.html", "x")
-        file.write("<html><head>hi</head></html>")
-        file.close()
+        file.write(f"<html><head></head><body><center><h1>{name}</h1></center><hr />{sentence}<hr /></body></html>")
+    #a file already exists
     except FileExistsError:
-        print("That file already exists.")
+        print("That file already exists. Please use a different name or delete the file and try again.")
+    #error getting the file
+    except IOError:
+        print("There was an issue getting the file.")
+    #general exception error
+    except Exception:
+        print("There was an error")
+    #close the file
+    finally:
+        file.close()
+    
+#avg_steps takes no arguements
+#reads from steps.txt and averages the number of steps taken in a month
+#outputs month and average steps for the month
+def avg_steps():
+    #assign the number of days to month name
+    January = 31
+    Febuary = 28
+    March = 31
+    April = 30
+    May = 31
+    June = 30
+    July = 31
+    August = 31
+    September = 30
+    October = 31
+    November = 30
+    December = 31
+    
+    #try to open file, and read lines from file as ints
+    try:
+        file = open("steps.txt", "r")
+        #January
+        number = 0
+        average = 0
+        #loop the amount of days this month
+        while number < January:
+            number += 1
+            line = file.readline()
+            average += int(line)
+        #output text
+        print("January\t\t", "{:,.2f}".format(average/January), "steps")
+        #Febuary
+        number = 0
+        average = 0
+        #loop the amount of days this month
+        while number < Febuary:
+            number += 1
+            line = file.readline()
+            average += int(line)
+        #output text
+        print("Febuary\t\t", "{:,.2f}".format(average/Febuary), "steps")
+        #March
+        number = 0
+        average = 0
+        #loop the amount of days this month
+        while number < March:
+            number += 1
+            line = file.readline()
+            average += int(line)
+        #output text
+        print("March\t\t", "{:,.2f}".format(average/March), "steps")
+        #April
+        number = 0
+        average = 0
+        #loop the amount of days this month
+        while number < April:
+            number += 1
+            line = file.readline()
+            average += int(line)
+        #output text
+        print("April\t\t", "{:,.2f}".format(average/April), "steps")
+        #May
+        number = 0
+        average = 0
+        #loop the amount of days this month
+        while number < May:
+            number += 1
+            line = file.readline()
+            average += int(line)
+        #output text
+        print("May\t\t", "{:,.2f}".format(average/May), "steps")
+        #June
+        number = 0
+        average = 0
+        #loop the amount of days this month
+        while number < June:
+            number += 1
+            line = file.readline()
+            average += int(line)
+        #output text
+        print("June\t\t", "{:,.2f}".format(average/June), "steps")
+        #July
+        number = 0
+        average = 0
+        #loop the amount of days this month
+        while number < July:
+            number += 1
+            line = file.readline()
+            average += int(line)
+        #output text
+        print("July\t\t", "{:,.2f}".format(average/July), "steps")
+        #August
+        number = 0
+        average = 0
+        #loop the amount of days this month
+        while number < August:
+            number += 1
+            line = file.readline()
+            average += int(line)
+        #output text
+        print("August\t\t", "{:,.2f}".format(average/August), "steps")
+        #September
+        number = 0
+        average = 0
+        #loop the amount of days this month
+        while number < September:
+            number += 1
+            line = file.readline()
+            average += int(line)
+        #output text
+        print("September\t", "{:,.2f}".format(average/September), "steps")
+        #October
+        number = 0
+        average = 0
+        #loop the amount of days this month
+        while number < October:
+            number += 1
+            line = file.readline()
+            average += int(line)
+        #output text
+        print("October\t\t", "{:,.2f}".format(average/October), "steps")
+        #November
+        number = 0
+        average = 0
+        #loop the amount of days this month
+        while number < November:
+            number += 1
+            line = file.readline()
+            average += int(line)
+        #output text
+        print("November\t", "{:,.2f}".format(average/November), "steps")
+        #December
+        number = 0
+        average = 0
+        #loop the amount of days this month
+        while number < December:
+            number += 1
+            line = file.readline()
+            average += int(line)
+        #output text
+        print("December\t", "{:,.2f}".format(average/December), "steps")
+    #catch file open error
+    except IOError:
+        print("could not open file")
+    #catch value errors
+    except ValueError:
+        print("A value in teh file could not be converted to an int")
+    #catch other general exceptions
+    except Exception:
+        print("There was an error")
+    #close the file
+    finally:
+        file.close()
+        
+#avg_steps2 takes no arguements
+#reads from steps.txt and averages the number of steps taken in a month
+#its avg_steps but without the challenge of not using a list
+#outputs month and average steps for the month        
+def avg_steps2():
+    #list of month dictionaries
+    listedMonths = [{"name": "January", "value": 31},
+                   {"name": "Febuary", "value": 28},
+                   {"name": "March", "value": 31},
+                   {"name": "April", "value": 30},
+                   {"name": "May", "value": 31},
+                   {"name": "June", "value": 30},
+                   {"name": "July", "value": 31},
+                   {"name": "August", "value": 31},
+                   {"name": "September", "value": 30},
+                   {"name": "October", "value": 31},
+                   {"name": "November", "value": 30},
+                   {"name": "December", "value": 31},]
+    #try to open file and convert lines to ints
+    try:
+        file = open("steps.txt", "r")
+        #loop through months
+        for month in listedMonths:
+            average = 0
+            #loops amount of days # of times
+            for _ in range(month["value"]):
+                line = file.readline()
+                average += int(line)
+            #formats based on line length
+            if len(month["name"]) >= 8:
+                print(f"{month['name']}\t", "{:,.2f}".format(average/month["value"]), "steps")
+            else:
+                print(f"{month['name']}\t\t", "{:,.2f}".format(average/month["value"]), "steps")
+    #catch can't open file errors
+    except IOError:
+        print("could not open file")
+    #could not convert to int
+    except ValueError:
+        print("Something in the file could not convert to an int.")
+    #catch general exceptions
+    except Exception:
+        print("There was an error")
+    #close the file
+    finally:
+        file.close()
     
