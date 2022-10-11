@@ -12,7 +12,8 @@ def line_numbers():
     try:
         file = open(f"{userInput}.txt", "r")
     except IOError:
-        print("There was an error opening the file")    
+        print("There was an error opening the file")
+        line_numbers()
     else:
         #loop through file lines
         for index, line in enumerate(file):
@@ -21,8 +22,11 @@ def line_numbers():
             #print index: line content
             print(f"{index}: {line}", end="")
     #close file
-    finally:
+    try:
         file.close()
+    except UnboundLocalError:
+        pass
+    menu()
     
 #line counter takes no arguments
 #prompts user for a file to read and gets the total number of lines
@@ -36,12 +40,16 @@ def line_counter():
         data = [line for line in data]
     except IOError:
         print("There was an error opening the file")
+        line_counter()
     else:
         #print number of lines
         print(f"There are {len(data)} lines in {TextFile}.txt.")
     #close file
-    finally:
-        data.close()
+    try:
+        file.close()
+    except NameError:
+        pass
+    menu()
         
 #average_of_numbers takes no arguments
 #gets the average of all the numbers in a text file
@@ -75,8 +83,11 @@ def average_of_numbers():
     else:
         print(f"There were {divisor} items with an average value of {average}")
     #close file
-    finally:
+    try:
         file.close()
+    except UnboundLocalError:
+        pass
+    menu()
         
 #ran_num_writer takes no arguments
 #writes a series of random numbers 1 - 500 to a file
@@ -103,8 +114,11 @@ def ran_num_writer():
             randomNum = random(1, 500)
             file.write(f"{randomNum}\n")
     #close file
-    finally:
+    try:
         file.close()
+    except UnboundLocalError:
+        pass
+    menu()
         
 #ran_num_reader takes no arguments
 #reads the random number file
@@ -133,8 +147,11 @@ def ran_num_reader():
     except Exception:
         print("Error: something went wrong")
     #close file
-    finally:
+    try:
         file.close()
+    except UnboundLocalError:
+        pass
+    menu()
 
 #------------------------------------------------------------------------#
 #------------------------------------------------------------------------#
@@ -145,7 +162,7 @@ def golf_main():
     print("Welcome to Hole in Twelve golf management system.")
     print("Please choose from the following commands...\n")
     choice = golf_menu()
-    functionHolder = [golf_read, golf_write, exit]
+    functionHolder = [golf_read, golf_write, menu]
     functionHolder[choice-1]()
     
 #golf_menu takes no arguments
@@ -188,8 +205,10 @@ def golf_read():
     except Exception:
         print("There was an error.")
     #close file
-    finally:
+    try:
         file.close()
+    except UnboundLocalError:
+        pass
     #go back to main function
     golf_main()
 
@@ -220,8 +239,10 @@ def golf_write():
     except Exception:
         print("There was an error.")
     #close file
-    finally:
+    try:
         file.close()
+    except UnboundLocalError:
+        pass
     #return to main function
     golf_main()
 
@@ -257,7 +278,11 @@ def web_page():
         print("There was an error")
     #close the file
     finally:
-        file.close()
+        try:
+            file.close()
+        except UnboundLocalError:
+            pass
+        menu()
     
 #avg_steps takes no arguements
 #reads from steps.txt and averages the number of steps taken in a month
@@ -411,7 +436,11 @@ def avg_steps():
         print("There was an error")
     #close the file
     finally:
-        file.close()
+        try:
+            file.close()
+        except UnboundLocalError:
+            pass
+        menu()
         
 #avg_steps2 takes no arguements
 #reads from steps.txt and averages the number of steps taken in a month
@@ -457,5 +486,42 @@ def avg_steps2():
         print("There was an error")
     #close the file
     finally:
-        file.close()
-    
+        try:
+            file.close()
+        except UnboundLocalError:
+            pass
+        menu()
+
+#menu takes no arguments
+#calls a function based on the user choice
+#displays a graphical menu of choices
+def menu():
+    #try to convert user input to int
+    try: 
+        index = int(input(("\nWhat function would you like to run?\n"
+            "1) Line Numbers\n"
+            "2) Line Counter\n" 
+            "3) Average of Numbers\n"
+            "4) Random Number File Writer\n"
+            "5) Random Number File Reader\n"
+            "6) Golf Scores\n"
+            "7) Personal Web Page Generator\n"
+            "8) Average Steps Taken\n"
+            "9) Exit\n"
+            ":: ")))
+        print()
+        #input validation
+        while not 1 <= index <= 9:
+            print("out of range")
+            menu()
+    #catch can't turn to int
+    except ValueError:
+        print("That was not a number!")
+        menu()
+    #catch general exceptions
+    except Exception:
+        print("An error occured")
+    #holds the functions
+    function_list = [line_numbers, line_counter, average_of_numbers, ran_num_writer, ran_num_reader, golf_main, web_page, avg_steps, exit]
+    function_list[index-1]()
+menu()
