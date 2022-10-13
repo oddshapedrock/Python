@@ -1,4 +1,4 @@
-import matplotlib
+import matplotlib.pyplot as plt
 
 def IsValid(string):
     return string.isnumeric()
@@ -12,8 +12,6 @@ def WaysToFilter():
     numbers = list(filter(lambda x: x > 5 or x is 2, numbers))
     print(numbers)
     
-
-
 def sales_list():
     sales = []
     days = int(input("How many days? : "))
@@ -142,3 +140,31 @@ def tests_calc():
     else:
         print("You input no scores")
         
+def main():
+    #add a titile
+    plt.title("Sales by Quarter")
+    #adds labels
+    #plt.xlabel("Years")
+    #plt.ylabel("Sales")
+    #ticks
+    #plt.xticks([0,1,2,3,4], ['2016', '2017', '2018', '2019', '2020'])
+    #plt.yticks([0,1,2,3,4,5], ['$0m', '$1m', '$2m', '$3m', '$4m', '$5m'])
+    #sets axis limits
+    #plt.xlim(xmin = -1, xmax = 10)
+    #plt.ylim(ymin = -1, ymax = 6)
+    #sets cords
+    x_cords = [0,10,20,30,40]
+    y_cords = [100,200,300,400,500]
+    #displays graphs
+    #plt.plot(x_cords, y_cords, marker = 'o')
+    bar_width = 5
+    #plt.figure(facecolor=("black"))
+    #plt.axes().set_facecolor("black")
+    #plt.bar(x_cords, y_cords, bar_width, color=('w'))
+    values = [20,60,80,40]
+    slice_labels = ['1st quarter', '2nd quarter', '3rd quarter', '4th quarter']
+    plt.pie(values, colors=('r','r','r','r'), labels = slice_labels)
+    #shows grid
+    #change background color
+    plt.grid(True)
+    plt.show()
