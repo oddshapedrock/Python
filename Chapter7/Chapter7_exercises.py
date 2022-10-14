@@ -1,4 +1,4 @@
-from random import choices
+from random import choices, randint
 
 #lottery takes no arguments
 #generates 7 lottery numbers
@@ -116,7 +116,7 @@ def drivers_exam():
             print(f"You answered {score} correctly out of {len(key_answers)}")
             print(f"You missed {len(wrong_answers)} questions. The minimum you could miss to pass is 5.")
             
-            if not len(wrong_answers) is 0:
+            if not len(wrong_answers) == 0:
                 if len(wrong_answers) > 5:
                     print(f"You failed the exam. Study and try again.")
                 else:
@@ -135,3 +135,51 @@ def drivers_exam():
         cont = input("Check another test? (y/n): ")
         if cont == "n":
             break
+            
+def tic_tac_toe():
+    game_board = [["-","-","-"],["-", "-", "-"],["-", "-", "-"]]
+    winner = None
+    player = 0
+    for index in range(9):
+        value_board = [(index, x) for index, x in enumerate(game_board) if "-" in x]
+        x_val = randint(0, len(value_board) -1)
+        y_list = []
+        for x in range(3):
+            if value_board[x_val][1][x] == "-":
+                y_list.append(x)
+        y_val = choices(y_list, k=1)[0]
+        if game_board[value_board[x_val][0]][y_val] == "-":
+            if player == 0:
+                game_board[value_board[x_val][0]][y_val] = "X"
+                player = 1
+            else:
+                game_board[value_board[x_val][0]][y_val] = "0"
+                player = 0
+            if index > 4:
+                is_over = gameover(game_board, [value_board[x_val][0], y_val])
+                if is_over:
+                    winner = game_board[value_board[x_val][0]][y_val]
+                    break
+    print("", game_board[0],"\n",game_board[1],"\n", game_board[2])
+    if not winner:
+        print("The game was a tie.")
+    else:
+        print(f"{winner} won the game.")
+
+def gameover(board, pos):
+    x = pos[0]
+    y = pos[1]
+    #test horizontal
+    if board[0][y] == board[1][y] == board[2][y]:
+        return True
+    #test vertical
+    if board[x][0] == board[x][1] == board[x][2]:
+        return True
+    #test diagonals
+    if board[0][0] == board[1][1] == board[2][2]:
+        return True
+    if board[0][2] == board[1][1] == board[2][0]:
+        return True
+    return False
+
+tic_tac_toe()
