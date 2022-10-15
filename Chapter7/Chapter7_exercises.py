@@ -220,17 +220,27 @@ def gameover(board, pos):
     return False
 #----------------------------------------------------------------------------#
 def white_elephant():
+    #group people together
     dev_dept = ("Julia", "Oliver", "Abigail")
     hr_dept = ("Camden", "Kayleigh", "Cooper", "Kerrigan")
     sales_dept = ("Avery", "Charlotte", "Elle")
+    #call functions
     lists = sort_by_length(dev_dept, hr_dept, sales_dept)
-    start_index = 0
-    for i in range(0, len(lists[-1]), 2):
-        print(lists[-1][i], lists[0][i])
-        print(lists[-1][i+1], lists[1][i])
-        print(i)
-        start_index = i
-    print(lists[0][start_index], lists[1][start_index])
+    match_list = insert_list(lists)
+    print("Here are the results")
+    for index, person in enumerate(match_list):
+        print(f"{person} gifts to {match_list[index-1]}")
+    
+def insert_list(lists):
+    list1, list2, list3 = lists
+    match_list = []
+    for value in list1:
+        match_list.append(value)
+    for index, value in enumerate(list2):
+        match_list.insert(index * 2, value)
+    for index, value in enumerate(list3):
+        match_list.insert(index * 2, value)
+    return match_list
 
 def sort_by_length(*lists):
     temp = [(index, len(lis)) for index, lis in enumerate(lists)]
@@ -238,4 +248,5 @@ def sort_by_length(*lists):
     list_of_lists = []
     for index in range(len(lists)):
         list_of_lists.append(lists[temp[index][0]])
-    return list_of_lists    
+
+    return list_of_lists 
