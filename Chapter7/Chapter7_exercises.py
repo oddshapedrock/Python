@@ -1,4 +1,5 @@
-from random import choices, randint
+from random import choices, randint, shuffle
+import matplotlib.pyplot as plt
 
 #lottery takes no arguments
 #generates 7 lottery numbers
@@ -219,34 +220,98 @@ def gameover(board, pos):
     #no win statements are true
     return False
 #----------------------------------------------------------------------------#
+#white_elephant takes no arguments
+#white elepahnt takes groups of people and pairs them up
+#people in the same group can not be paired together
+#outputs list of pairs
 def white_elephant():
     #group people together
-    dev_dept = ("Julia", "Oliver", "Abigail")
-    hr_dept = ("Camden", "Kayleigh", "Cooper", "Kerrigan")
-    sales_dept = ("Avery", "Charlotte", "Elle")
-    #call functions
-    lists = sort_by_length(dev_dept, hr_dept, sales_dept)
-    match_list = insert_list(lists)
+    dev_dept = ["Julia", "Oliver", "Abigail"]
+    hr_dept = ["Camden", "Kayleigh", "Cooper", "Kerrigan"]
+    sales_dept = ["Avery", "Charlotte", "Elle"]
+    shuffle(dev_dept)
+    shuffle(hr_dept)
+    shuffle(sales_dept)
+    #create list of matches
+    match_list = []
+    #put values in dev dept
+    for value in dev_dept:
+        match_list.append(value)
+    #put values in every other space in match list
+    for index, value in enumerate(hr_dept):
+        match_list.insert(index * 2, value)
+    #put values in every other space in match list
+    for index, value in enumerate(sales_dept):
+        match_list.insert(index * 2, value)
+    #output results
     print("Here are the results")
     for index, person in enumerate(match_list):
         print(f"{person} gifts to {match_list[index-1]}")
-    
-def insert_list(lists):
-    list1, list2, list3 = lists
-    match_list = []
-    for value in list1:
-        match_list.append(value)
-    for index, value in enumerate(list2):
-        match_list.insert(index * 2, value)
-    for index, value in enumerate(list3):
-        match_list.insert(index * 2, value)
-    return match_list
 
-def sort_by_length(*lists):
-    temp = [(index, len(lis)) for index, lis in enumerate(lists)]
-    temp.sort(key = lambda x: x[1])
-    list_of_lists = []
-    for index in range(len(lists)):
-        list_of_lists.append(lists[temp[index][0]])
+#magic_8_ball takes no arguments
+#generates a random statement to a yes or no question
+#prints the statement
+def magic_8_ball():
+    #try to open and read from file
+    try:
+        #initialize loop
+        while True:
+            #read from file
+            with open("8_ball_responses.txt", "r") as file:
+                #save files in file to array
+                responces = [line.rstrip("\n") for line in file]
+            #prompt for a question
+            input("What is your question? ")
+            #choose and print random response
+            print(responces[randint(0, len(responces)-1)])
+            #ask to continue
+            cont = input("\nAsk another question? ")
+            if cont == "n":
+                break
+            print()
+    #file could not be opened error
+    except IOError:
+        print("Error loading the 8 ball file.")
+    #general error
+    except Exception:
+        print("An error occured.")
+#----------------------------------------------------------------------------#
+#pie_cahrt takes no arguments
+#pie chart gets a list of users expences
+#has no output
+def pie_chart():
+    print("Enter values of last months expenses")
+    types = ["rent", "gas", "food", "clothing", "car payment", "misc"]
+    values = []
+    #loop through every type
+    for index, typ in enumerate(types):
+        value = input(f"What was your {typ}? ")
+        #input validation
+        while not value.isnumeric():
+            print("Value must be positive and a number!")
+            value = input(f"What was your {typ}? ")
+        #store input to list
+        values.append(value)
+    #checks if all values = 0
+    if values != ["0"]*6:
+        display_pie(values, types)
+    else:
+        print("Sorry you must have atleast one non-zero number to display a piechart.")
 
-    return list_of_lists 
+#display_pie takes two arguments (values for pie chart, lables for pie chart)
+#creates a pie chart of the values
+#displays the pie chart
+def display_pie(values, types):
+    #create and show pie chart
+    plt.title("Monlthly Expenses")
+    plt.pie(values,labels = types)
+    plt.show()
+#----------------------------------------------------------------------------#
+def weekly_gas_average():
+    try:
+        with open("1994_Weekly_Gas_Averages.txt") as file:
+            averages = [average for average in file]
+    except IOError:
+        print("Failed to open file")
+    except Exception:
+        print("An ")
