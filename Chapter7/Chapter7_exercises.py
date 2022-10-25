@@ -229,24 +229,25 @@ def white_elephant():
     dev_dept = ["Julia", "Oliver", "Abigail"]
     hr_dept = ["Camden", "Kayleigh", "Cooper", "Kerrigan"]
     sales_dept = ["Avery", "Charlotte", "Elle"]
+    #shuffle lists
     shuffle(dev_dept)
     shuffle(hr_dept)
     shuffle(sales_dept)
+    #sort lists by length
+    lists = [dev_dept, hr_dept, sales_dept]
+    sorted_list = list(sorted(lists, key = len))
     #create list of matches
-    match_list = []
-    #put values in dev dept
-    for value in dev_dept:
-        match_list.append(value)
+    match_list = [*sorted_list[0]]
     #put values in every other space in match list
-    for index, value in enumerate(hr_dept):
+    for index, value in enumerate(sorted_list[2]):
         match_list.insert(index * 2, value)
     #put values in every other space in match list
-    for index, value in enumerate(sales_dept):
+    for index, value in enumerate(sorted_list[1]):
         match_list.insert(index * 2, value)
     #output results
     print("Here are the results")
     for index, person in enumerate(match_list):
-        print(f"{person} gifts to {match_list[index-1]}")
+        print(f"{match_list[index-1]} gifts to {person}")
 
 #magic_8_ball takes no arguments
 #generates a random statement to a yes or no question
@@ -287,31 +288,69 @@ def pie_chart():
     for index, typ in enumerate(types):
         value = input(f"What was your {typ}? ")
         #input validation
-        while not value.isnumeric():
+        while not value.replace(".", "").isnumeric():
             print("Value must be positive and a number!")
             value = input(f"What was your {typ}? ")
         #store input to list
         values.append(value)
-    #checks if all values = 0
+    #checks if all values = 0        
     if values != ["0"]*6:
-        display_pie(values, types)
+        #tries to save data to file
+        try:
+            #writes data to file
+            with open("pie_data.txt", "w") as file:
+                for value in values:
+                    file.write(f"{value}\n")
+        #could not open file error
+        except IOError:
+            print("Error writing to file")
+        #general error
+        except Exception:
+            print("An error occured.")
     else:
         print("Sorry you must have atleast one non-zero number to display a piechart.")
 
-#display_pie takes two arguments (values for pie chart, lables for pie chart)
+
+#display_pie takes no arguments
 #creates a pie chart of the values
 #displays the pie chart
-def display_pie(values, types):
+def display_pie():
+    types = ["rent", "gas", "food", "clothing", "car payment", "misc"]
+    #try to read data from file
+    try:
+        with open("pie_data.txt", "r") as file:
+            values = [data for data in file]
+    #could not read from file error
+    except IOError:
+        print("Could not read from file.")
+    #general error
+    except Exception:
+        print("An error occured.")
     #create and show pie chart
     plt.title("Monlthly Expenses")
     plt.pie(values,labels = types)
     plt.show()
 #----------------------------------------------------------------------------#
+#weekly_gas_average takes no arguments
+#gets weekly gas price averages from file
+#displays graph of gas averages
 def weekly_gas_average():
+    #try to open and read from file
     try:
+        #save averages to list
         with open("1994_Weekly_Gas_Averages.txt") as file:
             averages = [average for average in file]
+        #tabel graph
+        plt.title("1994 weekly gas averages")
+        plt.xlabel("Week")
+        plt.ylabel("Gas Price / Gallon")
+        plt.plot(list(range(52)), averages)
+        plt.grid(True)
+        #show graph
+        plt.show()
+    #error opening file
     except IOError:
         print("Failed to open file")
+    #general error
     except Exception:
-        print("An ")
+        print("An error occured")
