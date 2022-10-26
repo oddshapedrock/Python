@@ -64,7 +64,7 @@ def morse_code():
         canContinue = True
         #gets the message and sepperates the characters with a four-per-em space
         string = input("Message to encode: ")
-        string = " ".join([*string])
+        string = " ".join([*string]).lower()
         #checks if every letter is in the alphabet dictionary, and is not the space
         for letter in string:
             if not letter in alphabet and not letter == " ":
@@ -114,3 +114,90 @@ def phone_converter():
             number = number.replace(char, num_list[ord(char) - 97])
     #output phone number        
     print("Here is your telephone number: " + number)
+    
+#avg_num_words takes no arguments
+#gets the average words per line in text.txt
+#outputs total words, total lines, and average
+def avg_num_words():
+    #try to open file
+    try:
+        with open("text.txt", "r") as file:
+            data = [line for line in file]
+    #could not open the file
+    except IOError:
+        print("Could not open the file.")
+        return
+    #split every line into words    
+    for index, line in enumerate(data):
+        data[index] = line.split()
+    #get values from data    
+    total_words = sum([len(line) for line in data])
+    total_sent = len(data)
+    average_words = total_words / total_sent
+    #output messages
+    print(f"The file text.txt has {total_words} words.")
+    print(f"The file text.txt has {total_sent} lines.")
+    print(f"The average words per sentence is: {average_words}")
+    
+#igpay_atinlay takes no arguments
+#converts a message to a form of pig latin
+#outputs pig latin message
+def igpay_atinlay():
+    string = input("Message: ")
+    #ensures alpha and space chars only
+    while not all(letter.isalpha() or letter.isspace() for letter in string):
+        print("Message can only contain alphabet characters.")
+        string = input("Message: ")
+    #split string to letters
+    string = string.split()
+    #rearange the letters
+    for index, word in enumerate(string):
+        #put first letter at end of word add "ay"
+        word_arrange = word[1:] + word[0]
+        pig_latin = word_arrange + "ay"
+        string[index] = pig_latin
+    #join the string
+    string = " ".join(string).upper()
+    #print output
+    print(string)
+    
+def pb_main():
+    try:
+        with open("pbnumbers.txt", "r") as file:
+            data = [line for line in file]
+    except IOError:
+        print("Could not open file.")
+        return
+    
+    pb_most_common(data)
+    pb_least_common(data)
+    
+def pb_most_common(data):
+    for index, _ in enumerate(data):
+        data[index] = data[index].replace("\n", "").split()
+        data[index].pop()
+        data[index] = " ".join(data[index])
+    number_list = " ".join(data).split()
+    frequent_nums = []
+    for x in range(10):
+        most_frequent = max(set(number_list), key=number_list.count)
+        frequent_nums.append(most_frequent)
+        number_list = [number for number in number_list if not number == most_frequent]
+    print(frequent_nums)
+
+def pb_least_common(data):
+    for index, _ in enumerate(data):
+        data[index] = data[index].replace("\n", "").split()
+        data[index].pop()
+        data[index] = " ".join(data[index])
+    number_list = " ".join(data).split()
+    frequent_nums = []
+    for x in range(10):
+        most_frequent = min(set(number_list), key=number_list.count)
+        frequent_nums.append(most_frequent)
+        number_list = [number for number in number_list if not number == most_frequent]
+    frequent_nums.reverse()
+    print(frequent_nums)
+    
+def pb_frequency():
+    pass
