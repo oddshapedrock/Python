@@ -213,13 +213,21 @@ def frequency():
     #return a list of the dictionary values
     return list(dictionary)
 #----------------------------------------------------------------------------------------------------------#
+#gas_prices takes no arguments
+#used as a main function to call other functions
+#returns nothing
 def gas_prices():
+    #get data
     timeline = create_timeline()
+    #modify data
     compiled_data = get_year_data(timeline)
     output_message(compiled_data)
     sort_list(timeline)
-    
+#create_timeline takes no arguments
+#used to split data in GasPrices.txt into usable chunks
+#returns list of data   
 def create_timeline():
+    #try to open GasPrices.txt
     try:
         with open("GasPrices.txt", "r") as file:
             data = [*file]
@@ -227,27 +235,38 @@ def create_timeline():
     except IOError:
         print("Could not open file.")
         return
-    
     timeline = []
-    
+    #seperate data in the file
     for line in data:
         date = line[:10]
         year = line[6:10]
         price = line[11:].rstrip("\n")
+        #add data to list
         timeline.append({"date": date, "year": year, "price": price})
-        
+    #return list    
     return timeline
-
+#get_year_data takes one argument (list of data to go through)
+#creates a dictionary of data, sorted by year
+#returns the dictionary
 def get_year_data(timeline):
     compiled_data = {}
+    #gets data for every year 1993 - 2013
     for year in range(1993, 2013+1):
+        #filters the data to only that of desired year
         of_year = list(filter(lambda time: time["year"] == str(year), timeline))
+        #gets average gas price of the year
         average = format(sum(float(item["price"]) for item in of_year) / len(of_year), "0.2f")
+        #gets the highest gas price of the year
         highest = max([(time["price"]) for time in of_year])
+        #gets the date information of the date with highest gas price
         date_high = [value for index, value in enumerate(of_year) if value["price"] == highest]
+        #gets the lowest gas price of the year
         lowest = min([time["price"] for time in of_year])
+        #gets the date information of the date with lowest gas price
         date_low = [value for index, value in enumerate(of_year) if value["price"] == lowest]
+        #stores the data into a dictionary to go through later
         compiled_data[year] = ({"average": average, "highest": date_high[0], "lowest": date_low[0]})
+    #return dictionary of data
     return compiled_data
 
 def sort_list(timeline):
