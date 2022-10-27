@@ -160,7 +160,9 @@ def igpay_atinlay():
     string = " ".join(string).upper()
     #print output
     print(string)
-    
+
+#-------------------------------------------------------------------------------------------#
+
 def pb_main():
     try:
         with open("pbnumbers.txt", "r") as file:
@@ -169,35 +171,39 @@ def pb_main():
         print("Could not open file.")
         return
     
-    pb_most_common(data)
-    pb_least_common(data)
-    
-def pb_most_common(data):
     for index, _ in enumerate(data):
         data[index] = data[index].replace("\n", "").split()
         data[index].pop()
         data[index] = " ".join(data[index])
     number_list = " ".join(data).split()
+    
+    most_common = pb_most_common(number_list)
+    least_common = pb_least_common(number_list)
+    
+    print("Most common numbers (most - least frequent): ")
+    for num in most_common:
+        print(num)
+    
+    print("\nLeast common numbers (most - least frequent): ")
+    for num in least_common:
+        print(num)
+    
+    
+def pb_most_common(number_list):
     frequent_nums = []
     for x in range(10):
-        most_frequent = max(set(number_list), key=number_list.count)
+        most_frequent = max(number_list, key=number_list.count)
         frequent_nums.append(most_frequent)
         number_list = [number for number in number_list if not number == most_frequent]
-    print(frequent_nums)
+    return frequent_nums
 
-def pb_least_common(data):
-    for index, _ in enumerate(data):
-        data[index] = data[index].replace("\n", "").split()
-        data[index].pop()
-        data[index] = " ".join(data[index])
-    number_list = " ".join(data).split()
+def pb_least_common(number_list):
     frequent_nums = []
     for x in range(10):
-        most_frequent = min(set(number_list), key=number_list.count)
+        most_frequent = min(number_list, key=number_list.count)
         frequent_nums.append(most_frequent)
         number_list = [number for number in number_list if not number == most_frequent]
     frequent_nums.reverse()
-    print(frequent_nums)
-    
-def pb_frequency():
-    pass
+    return frequent_nums
+
+#----------------------------------------------------------------------------------------------------------------#
