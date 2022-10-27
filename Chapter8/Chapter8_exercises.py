@@ -58,7 +58,7 @@ def morse_code():
     for num in range(10):
         alphabet.append(str(num))     
     #list of all characters to morse code in same order as alphabet list
-    morse_code = ['/', '•-', '-•••', '-•-•', '-••', '•', '••-•', '--•', '••••', '••', '•---', '-•-', '•-••', '--', '-•', '---', '•--•', '--•-', '•-•', '•••', '-', '••-', '•••-', '•--', '-••-', '-•--', '--••', '-----', '•----', '••---', '•••---', '••••-', '•••••', '-••••', '--•••', '---••', '----•']
+    morse = ['/', '•-', '-•••', '-•-•', '-••', '•', '••-•', '--•', '••••', '••', '•---', '-•-', '•-••', '--', '-•', '---', '•--•', '--•-', '•-•', '•••', '-', '••-', '•••-', '•--', '-••-', '-•--', '--••', '-----', '•----', '••---', '•••---', '••••-', '•••••', '-••••', '--•••', '---••', '----•']
     #input validation loop
     while True:
         canContinue = True
@@ -75,7 +75,7 @@ def morse_code():
         print("Message can only contain alphabet, number characters, and space.")
     #replace every character with corresponding morse_code value
     for index, char in enumerate(alphabet):
-        string = string.replace(char, morse_code[index])
+        string = string.replace(char, morse[index])
     print(string)
     
 #phone_converter takes no arguments
@@ -84,36 +84,23 @@ def morse_code():
 def phone_converter():
     while True:
         #get user input
-        numberInput = input("Enter a number. Format (XXX-XXX-XXXX): ")
-        #split input at "-" and store value as int. Only if it is numeric!
-        number = numberInput.split("-")
+        numberInput = input("Enter a number. Format (XXX-XXX-XXXX): ").lower()
         #checks input is required length and "-" = 2
-        if len(numberInput) == 12 and len(number) == 3:
-            #ensures proper distripution of chars between "-"
-            if len(number[2]) == 4 and len(number[1]) == 3 and not number[0][0] == "0":
-                #checks that all characters are alphabet or number
-                if all(char.isalnum() or char == "-" for char in [character for character in numberInput]):
-                    break
+        if len(numberInput) == 12 and numberInput.count("-") == 2:
+            #ensures proper distripution of chars between "-" and alpha numericy
+            if numberInput[8:].isalnum() and numberInput[0:3].isalnum() and numberInput[4:7].isalnum() and not numberInput[0] == "0":
+                break
         #inform user that something is wrong with their string
         print("Sorry that is not properly formatted.")
-    #get a list of numbers corresponding with keypad numbers and alphabet locations
-    num_list = []
-    #for all numbers 2-9
-    for integer in range(2, 10):
-        #add number 3 times
-        for _ in range(3):
-            num_list.append(str(integer))
-        #add additional time if 7 or 9
-        if integer == 7 or integer == 9:
-            num_list.append(str(integer))
-    #make lowercase
-    number = numberInput.lower() 
+    #list of numbers corresponding with keypad numbers and alphabet locations
+    num_list = ["2", "2", "2", "3", "3", "3", "4", "4", "4", "5", "5", "5", "6",
+                "6", "6", "7", "7", "7", "7", "8", "8", "8", "9", "9", "9", "9"]
     #replace each non alpha letter with number in corresponting point of numlist
-    for char in number:
+    for char in numberInput:
         if char.isalpha():
-            number = number.replace(char, num_list[ord(char) - 97])
+            numberInput = numberInput.replace(char, num_list[ord(char) - 97])
     #output phone number        
-    print("Here is your telephone number: " + number)
+    print("Here is your telephone number: " + numberInput)
     
 #avg_num_words takes no arguments
 #gets the average words per line in text.txt
@@ -165,7 +152,7 @@ def igpay_atinlay():
 #pb_main takes no arguments
 #calculates and most and least frequent numbers
 #outputs most and least frequent numbers
-def pb_main2():
+def pb_main():
     #call frequency
     freq = frequency()
     #get last 10 in list
@@ -192,14 +179,14 @@ def frequency():
     #could not read file error
     except IOError:
         print("Could not open file.")
-        return
+        return None
     #remove the powerball number and "\n" character
     for index, _ in enumerate(data):
         data[index] = data[index].rsplit(" ", 1)[0]
     #join all lines into one large list
     number_list = " ".join(data).split()
     #create a dictionary to later sort
-    dictionary = {}
+    dictionary: dict = {}
     #check each number > is in dictionary increase value by 1
     #> is not in dictionary add it to dictionary with starting value of 1
     for num in number_list:
@@ -223,6 +210,7 @@ def gas_prices():
     compiled_data = get_year_data(timeline)
     output_message(compiled_data)
     sort_list(timeline)
+    
 #create_timeline takes no arguments
 #used to split data in GasPrices.txt into usable chunks
 #returns list of data   
@@ -234,7 +222,7 @@ def create_timeline():
     #could not read file error
     except IOError:
         print("Could not open file.")
-        return
+        return None
     timeline = []
     #seperate data in the file
     for line in data:
@@ -245,6 +233,7 @@ def create_timeline():
         timeline.append({"date": date, "year": year, "price": price})
     #return list    
     return timeline
+
 #get_year_data takes one argument (list of data to go through)
 #creates a dictionary of data, sorted by year
 #returns the dictionary
@@ -269,27 +258,45 @@ def get_year_data(timeline):
     #return dictionary of data
     return compiled_data
 
+#sort_list takes one argument (list of data to go through)
+#sorts the list by price high to low and outputs to file
+#sorts the list by price low to high and outputs to file
 def sort_list(timeline):
+    #sort by price
     sorted_timeline = list(sorted(timeline, key=lambda value: value["price"]))
-    with open("Low-to-High.txt", "w") as file:
-        for date in sorted_timeline:
-            file.write(f'{date["date"]}:{date["price"]}\n')
-    sorted_timeline.reverse()
-    with open("High-to-Low.txt", "w") as file:
-        for date in sorted_timeline:
-            file.write(f'{date["date"]}:{date["price"]}\n')
-#comment
+    #try to wite data to files
+    try:
+        #ouput low to high to Low-to-High.txt
+        with open("Low-to-High.txt", "w") as file:
+            #format data lines
+            for date in sorted_timeline:
+                file.write(f'{date["date"]}:{date["price"]}\n')
+        #reverse the list
+        sorted_timeline.reverse()
+        #output High-to-low
+        with open("High-to-Low.txt", "w") as file:
+            #format data lines
+            for date in sorted_timeline:
+                file.write(f'{date["date"]}:{date["price"]}\n')
+    #could not write to files error
+    except IOError:
+        print("Failed to write data to files.")
+        
+#output_message takes one argument (data of each year compiled to dictionary)
+#gets the messages to output
+#ouputs the messages
 def output_message(compiled_data):
+    #print (1993-2013) averages
     for year in range(1993, 2013+1):
         data = compiled_data[year]
-        print(f'The average price in {year} was: ${data["average"]}')
-        
+        print(f'The average price in {year} was: ${data["average"]}')   
     print()
+    #print (1993-2013) highest value and date
     for year in range(1993, 2013+1):
         data = compiled_data[year]
-        print(f'The highest price in {year} was on {data["highest"]["date"]} with a value of ${float(data["highest"]["price"]):0.2f}')
-        
+        print(f'The highest price in {year} was on {data["highest"]["date"]} with a value of ${float(data["highest"]["price"]):0.2f}')    
     print()
+    #print (1993-2013) lowest value and date
     for year in range(1993, 2013+1):
         data = compiled_data[year]
         print(f'The lowest price in {year} was on {data["lowest"]["date"]} with a value of ${float(data["lowest"]["price"]):0.2f}')
