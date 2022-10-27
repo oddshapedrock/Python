@@ -122,7 +122,7 @@ def avg_num_words():
     #try to open file
     try:
         with open("text.txt", "r") as file:
-            data = [line for line in file]
+            data = [*file]
     #could not open the file
     except IOError:
         print("Could not open the file.")
@@ -162,48 +162,115 @@ def igpay_atinlay():
     print(string)
 
 #-------------------------------------------------------------------------------------------#
-
-def pb_main():
+#pb_main takes no arguments
+#calculates and most and least frequent numbers
+#outputs most and least frequent numbers
+def pb_main2():
+    #call frequency
+    freq = frequency()
+    #get last 10 in list
+    least_common = freq[:-11:-1]
+    #get fisrt 10 in list
+    most_common = freq[:10]
+    #output most common numbers
+    print("Most common numbers (most - least frequent): ")
+    for num in most_common:
+        print(num)
+    #output least common numbers
+    print("\nLeast common numbers (least frequent - most): ")
+    for num in least_common:
+        print(num)
+        
+#frequency takes no arguments
+#calculates the frequency of numbers that occur in the powerball
+#returns a sorted list of numbers in order of their occurance most - least common
+def frequency():
+    #try to open pbnumbers.txt
     try:
         with open("pbnumbers.txt", "r") as file:
-            data = [line for line in file]
+            data = [*file]
+    #could not read file error
+    except IOError:
+        print("Could not open file.")
+        return
+    #remove the powerball number and "\n" character
+    for index, _ in enumerate(data):
+        data[index] = data[index].rsplit(" ", 1)[0]
+    #join all lines into one large list
+    number_list = " ".join(data).split()
+    #create a dictionary to later sort
+    dictionary = {}
+    #check each number > is in dictionary increase value by 1
+    #> is not in dictionary add it to dictionary with starting value of 1
+    for num in number_list:
+        if num in dictionary:
+            dictionary[num] += 1
+        else:
+            dictionary[num] = 1
+    #sort the dictionary first by the reverse of the value
+    #if values are the same sort then by the key number
+    dictionary = dict(sorted(dictionary.items(), key= lambda item: (-int(item[1]), item[0])))
+    #return a list of the dictionary values
+    return list(dictionary)
+#----------------------------------------------------------------------------------------------------------#
+def gas_prices():
+    timeline = create_timeline()
+    compiled_data = get_year_data(timeline)
+    output_message(compiled_data)
+    sort_list(timeline)
+    
+def create_timeline():
+    try:
+        with open("GasPrices.txt", "r") as file:
+            data = [*file]
+    #could not read file error
     except IOError:
         print("Could not open file.")
         return
     
-    for index, _ in enumerate(data):
-        data[index] = data[index].replace("\n", "").split()
-        data[index].pop()
-        data[index] = " ".join(data[index])
-    number_list = " ".join(data).split()
+    timeline = []
     
-    most_common = pb_most_common(number_list)
-    least_common = pb_least_common(number_list)
-    
-    print("Most common numbers (most - least frequent): ")
-    for num in most_common:
-        print(num)
-    
-    print("\nLeast common numbers (most - least frequent): ")
-    for num in least_common:
-        print(num)
-    
-    
-def pb_most_common(number_list):
-    frequent_nums = []
-    for x in range(10):
-        most_frequent = max(number_list, key=number_list.count)
-        frequent_nums.append(most_frequent)
-        number_list = [number for number in number_list if not number == most_frequent]
-    return frequent_nums
+    for line in data:
+        date = line[:10]
+        year = line[6:10]
+        price = line[11:].rstrip("\n")
+        timeline.append({"date": date, "year": year, "price": price})
+        
+    return timeline
 
-def pb_least_common(number_list):
-    frequent_nums = []
-    for x in range(10):
-        most_frequent = min(number_list, key=number_list.count)
-        frequent_nums.append(most_frequent)
-        number_list = [number for number in number_list if not number == most_frequent]
-    frequent_nums.reverse()
-    return frequent_nums
+def get_year_data(timeline):
+    compiled_data = {}
+    for year in range(1993, 2013+1):
+        of_year = list(filter(lambda time: time["year"] == str(year), timeline))
+        average = format(sum(float(item["price"]) for item in of_year) / len(of_year), "0.2f")
+        highest = max([(time["price"]) for time in of_year])
+        date_high = [value for index, value in enumerate(of_year) if value["price"] == highest]
+        lowest = min([time["price"] for time in of_year])
+        date_low = [value for index, value in enumerate(of_year) if value["price"] == lowest]
+        compiled_data[year] = ({"average": average, "highest": date_high[0], "lowest": date_low[0]})
+    return compiled_data
 
-#----------------------------------------------------------------------------------------------------------------#
+def sort_list(timeline):
+    sorted_timeline = list(sorted(timeline, key=lambda value: value["price"]))
+    with open("Low-to-High.txt", "w") as file:
+        for date in sorted_timeline:
+            file.write(f'{date["date"]}:{date["price"]}\n')
+    sorted_timeline.reverse()
+    with open("High-to-Low.txt", "w") as file:
+        for date in sorted_timeline:
+            file.write(f'{date["date"]}:{date["price"]}\n')
+
+def output_message(compiled_data):
+    for year in range(1993, 2013+1):
+        data = compiled_data[year]
+        print(f'The average price in {year} was: ${data["average"]}')
+        
+    print()
+    for year in range(1993, 2013+1):
+        data = compiled_data[year]
+        print(f'The highest price in {year} was on {data["highest"]["date"]} with a value of ${float(data["highest"]["price"]):0.2f}')
+        
+    print()
+    for year in range(1993, 2013+1):
+        data = compiled_data[year]
+        print(f'The lowest price in {year} was on {data["lowest"]["date"]} with a value of ${float(data["lowest"]["price"]):0.2f}')
