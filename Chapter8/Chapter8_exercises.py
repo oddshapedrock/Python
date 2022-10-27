@@ -259,7 +259,7 @@ def sort_list(timeline):
     with open("High-to-Low.txt", "w") as file:
         for date in sorted_timeline:
             file.write(f'{date["date"]}:{date["price"]}\n')
-
+#comment
 def output_message(compiled_data):
     for year in range(1993, 2013+1):
         data = compiled_data[year]
