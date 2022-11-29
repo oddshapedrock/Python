@@ -1,0 +1,4 @@
+This is the thing that is encoded
+This is the second line
+You can call this the third line
+Super Secret Key -> 12jK931FDlJ032Xz

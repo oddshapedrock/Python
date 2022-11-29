@@ -1,0 +1,10 @@
+softball = set(["jodi", "carmen", "aida", "alicia"])
+basketball = set(["eva", "carmen", "sarah", "alicia"])
+
+print(f"softball{softball}")
+print(f"baskteball{basketball}")
+print(f"both{softball&basketball}")
+print(f"or{softball|basketball}")
+print(f"softballOnly{set([per for per in list(softball) if per not in basketball])}")
+print(f"basketballOnly{set([per for per in list(basketball) if per not in softball])}")
+print(f"oneOnly{basketball.symmetric_difference(softball)}")
