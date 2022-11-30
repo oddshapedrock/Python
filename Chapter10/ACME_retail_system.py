@@ -1,5 +1,6 @@
 import pickle
 from RetailItem import RetailItem as RI
+from CashRegister import CashRegister as CR
 #----------------------------------------------------------------------------------------------------------#
 #menu system
 
@@ -35,7 +36,7 @@ def retail_menu():
     print("1) View cart")
     print("2) Display items for sale")
     print("3) Purchase item")
-    print("4) Empty card and start over")
+    print("4) Empty cart and start over")
     print("5) Check out")
     print("6) Exit to main menu")
 
@@ -106,23 +107,74 @@ def inventory_system_save(inventory):
 
 def retail_store_main(inventory):
     #create empty cart
-    cart = []
+    register = CR()
     while True:
         choice = get_choice(retail_menu, 6)
         #call choice
-        [retail_store_cart, inventory_system_display, retail_store_purchase, retail_store_clear, retail_store_check_out, system_exit][choice](inventory)
+        loop = False
+        if choice == 1:
+            inventory_system_display(inventory)
+        elif choice == 2:
+            retail_store_purchase(inventory, register)
+        elif choice == 3:
+            retail_store_clear(register)
+        elif choice == 4:
+            loop = retail_store_check_out(inventory, register)
+        elif choice == 5:
+            loop = retail_system_exit(register)
+        elif choice == 0:
+            retail_store_cart(register)
+        #test for loop break
+        if loop:
+            break
+    main()
 
-def retail_store_cart():
-    pass
+def retail_store_cart(register):
+    register.show_cart()
 
-def retail_store_purchase():
-    pass
+def retail_store_purchase(inventory, register):
+    while True:
+        key = input("What would you like to purchase? ")
+        for item in inventory:
+            if item.get_name().lower() == key.lower():
+                success = register.purchase_item(item)
+                if success:
+                    print(f"{key} have been added to the cart.")
+                else:
+                    print("We do not have enough of that item in stock!")
+                break
+        else:
+            print("Item not found!")
+        cont = input("Add another item? (y/n) ").lower()
+        if cont == "n":
+            break
 
-def retail_store_clear():
-    pass
+def retail_store_clear(register):
+    register.empty()
+    print("Cleared the cart!")
 
-def retail_store_check_out():
-    pass
+def retail_store_check_out(inventory, register):
+    register.show_cart()
+    complete = input("Enter Y to complete transaction and return to main menu.\nAny other key will clear the cart.").lower()
+    
+    #remove from quantity
+    for item in register.get_cart():
+        newInventory = []
+        if item[0] in inventory:
+            index = inventory.index(item[0])
+            origional = inventory[index].get_quantity()
+            new = int(origional) - item[1]
+            if new > 0:
+                inventory[index].set_quantity(new)
+                newInventory.append(item[0])
+                
+        inventory_system_save(newInventory)
+        
+    if complete == "y":
+        print("Purchase complete")
+        return True
+    else:
+        retail_store_clear(register)
 
 #----------------------------------------------------------------------------------------------------------#
 #inventory system
@@ -133,7 +185,12 @@ def load_inventory():
 
 #----------------------------------------------------------------------------------------------------------#
 #exit
+
+def retail_system_exit(_arg):
+    return True
+
 def system_exit(_arg):
-    pass
+    print("Thank you for using the ACME Retail System")
+    exit()
 
 main()
