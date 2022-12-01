@@ -1,46 +1,53 @@
 import pickle
 from random import randint
 
+#main takes no arguments
 def main():
+    #main menu
     while True:
         print("1) create account")
         print("2) delete account")
         method = input("::")
+        #checks rumber is integer in range
         if method.isnumeric():
             if 0 < int(method) < 3:
                 break
-    
     print()
+    
+    #load the account profiles
     accounts = load_accounts()
+    
+    #call function based on user input
     [create_account, delete_account][int(method)-1](accounts)
 
+#load_accounts takes no arguments
+#loads the accounts from accounts.dat
+#returns dictionary of accounts
 def load_accounts():
     with open("accounts.dat", "rb") as file:
         accounts = pickle.load(file)
     return accounts
 
-def cypher(string, shift):
-    shifted_string = ""
-    alphabet = [*"abdefhijkmnoprsuvyz023568!"]
-    shifted_alphabet = alphabet[shift:] + alphabet[:shift]
-    for letter in string:
-        index = shifted_alphabet.index(letter)
-        shifted_string += alphabet[index]
-    return shifted_string
-
+#create_account takes one argument (user accounts dictionary)
+#gets user input username and password, hashes it and stores it to file
+#returns nothing
 def create_account(accounts):
-    username = input("Enter a username: ").lower()
+    #username input
+    username = input("Enter a username: ")
+    
+    #password authentication loop
     while True:
-        password = input("Enter a password: ").lower()
-        authenticator = input("Re-enter password: ").lower()
+        password = input("Enter a password: ")
+        authenticator = input("Re-enter password: ")
+        #ensure password matches
         if password == authenticator:
             break
         print("\nPasswords do not match")
         
-    shift = randint(1, 25)
-    password = cypher(password, shift)
+    shift = randint(1, 32)
+    password = hash(password)
     
-    accounts[username] = [password, shift]
+    accounts[username] = password
     save_data(accounts)
 
 def delete_account(accounts):

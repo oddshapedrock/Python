@@ -2,6 +2,13 @@ import pickle
 from RetailItem import RetailItem as RI
 from CashRegister import CashRegister as CR
 #----------------------------------------------------------------------------------------------------------#
+
+#ACME_retail_system is the stores management program
+
+#Has an inventory management system to manage the store inventory
+#Has a retail system to purchase items from the inventory
+
+#----------------------------------------------------------------------------------------------------------#
 #menu system
 
 #main menu takes no arguments
@@ -67,8 +74,18 @@ def get_choice(menu, maxVal):
 #reads inventory data from file
 #returns the data from the file
 def load_inventory():
-    with open("inventory.dat", "rb") as file:
-        data = pickle.load(file)
+    #try to read from file
+    try:
+        with open("inventory.dat", "rb") as file:
+            data = pickle.load(file)
+    #try to write to file
+    except Exception:
+        print("File created!")
+        #create file
+        data  = []
+        with open("inventory.dat", "wb") as file:
+            pickle.dump([], file)
+    #returns the inventory
     return data
 
 #inventory_system_main takes one argument (list of inventory objects)
@@ -82,6 +99,7 @@ def inventory_system_main(inventory):
     #return if login fails
     if not log:
         print("Username or password is incorrect!")
+        main()
         return
     
     #stick in inventory system until exit
@@ -109,42 +127,59 @@ def inventory_system_display(inventory):
 #adds an item to the inventory
 #returns nothing
 def inventory_system_add(inventory):
-    #user input name
-    name = input("Enter a name: ")
-    
-    #quantity validation
+    #loop item creation
     while True:
-        quantity = input(f"Enter amount of {name} in stock: ")
-        #check that it is a number
-        if quantity.isnumeric():
-            #check that the number is > 0
-            if int(quantity) > 0:
+        #create list of item names
+        itemList = []
+        for item in inventory:
+            itemList.append(item.get_name())
+        #user input name validation
+        while True:
+            name = input("Enter a name: ").lower()
+            #name does not exist
+            if not name in itemList:
                 break
-            else:
-                print("Amount must be > 0.")
-        else:
-            print("Amount must be a number.")
             
-    #price validation
-    while True:
-        price = input(f"Enter price of {name}: ")
-        #checks that string with one decimal removed a float
-        if price.replace(".",  "", 1).isnumeric():
-            #checks that number is > 0
-            if float(price) > 0:
-                break
+            print("Item with that name already exists")
+        
+        #quantity validation
+        while True:
+            quantity = input(f"Enter amount of {name} in stock: ")
+            #check that it is a number
+            if quantity.isnumeric():
+                #check that the number is > 0
+                if int(quantity) > 0:
+                    break
+                else:
+                    print("Amount must be > 0.")
             else:
-                print("Amount must be > 0.")
-        else:
-            print("Amount must be a valid number.")
-    
-    #creates a new item object
-    item = RI(name, quantity, price)
-    
-    #add item object to list
-    inventory.append(item)
+                print("Amount must be a number.")
+                
+        #price validation
+        while True:
+            price = input(f"Enter price of {name}: ")
+            #checks that string with one decimal removed a float
+            if price.replace(".",  "", 1).isnumeric():
+                #checks that number is > 0
+                if float(price) > 0:
+                    break
+                else:
+                    print("Amount must be > 0.")
+            else:
+                print("Amount must be a valid number.")
+        
+        #creates a new item object
+        item = RI(name, quantity, price)
+        
+        #add item object to list
+        inventory.append(item)
 
-    print()
+        cont = input("Add another? (y/n) ").lower()
+        if cont == "n":
+            print()
+            break
+
+        print()
 
 #inventory_system_save takes one argument (list of inventory objects)
 #pickles the inventory list
@@ -286,9 +321,14 @@ def retail_store_check_out(inventory, register):
 #reads the accounts data from file
 #returns the account data
 def load_accounts():
-    with open("accounts.dat", "rb") as file:
-        accounts = pickle.load(file)
-    return accounts
+    #try to open file
+    try:
+        with open("accounts.dat", "rb") as file:
+            accounts = pickle.load(file)
+        return accounts
+    #file could not be opened
+    except Exception:
+        print("accounts.dat not found!")
 
 #login takes one argument (accounts data)
 #asks the user for a username and password
@@ -304,35 +344,13 @@ def login(accounts):
         #gets user info
         account = accounts[username]
         #shifts the password
-        password = cypher(password, account[1])
+        password = hash(password)
         #checks the password
-        if account[0] == password:
+        if account == password:
             #successful login
             return True
     #unsuccessful login
     return False
-
-#cypher takes two argumetns (a string to encrypt, and a number to shift it by)
-#encrypts a string for password validation
-#returns the encrypted string
-def cypher(string, shift):
-    shifted_string = "" #string to return placeholder
-    #creates an incomplete dictionary of items to shift
-    alphabet = [*"abdefhijkmnoprsuvyz023568!"]
-    #splits the string at the split point
-    shifted_alphabet = alphabet[shift:] + alphabet[:shift]
-    
-    #goes through every letter in the string
-    for letter in string:
-        #checks that letter exists in alphabet
-        if letter in alphabet:
-            #replace letter with letter in corrosponding possion of shifted string
-            index = shifted_alphabet.index(letter)
-            shifted_string += alphabet[index]
-        #if letter is not in string replaces it with the first letter in the shifted alphabet
-        else:
-            shifted_string += shifted_alphabet[0]
-    return shifted_string
 
 #----------------------------------------------------------------------------------------------------------#
 #exit
@@ -343,7 +361,6 @@ def cypher(string, shift):
 def system_exit(_arg):
     print("Thank you for using the ACME Retail System")
     exit()
-
 
 #start code with main function
 main()
