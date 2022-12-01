@@ -31,6 +31,8 @@ def inventory_menu():
     print("3) Save inventory")
     print("4) Exit")
 
+#retail_menu takes no arguments
+#displays retial menu
 def retail_menu():
     print("Choose an option")
     print("1) View cart")
@@ -53,42 +55,82 @@ def get_choice(menu, maxVal):
             #checks input is within value range
             if 0 < int(choice) <= maxVal:
                 break
+        print(f"Invalid option. Choose an option between 1 and {maxVal}.")
+    print("\n")
     #returns user input offset for lists
     return int(choice) -1
 
 #----------------------------------------------------------------------------------------------------------#
 #inventory system
 
+#load_inventory takes no arguments
+#reads inventory data from file
+#returns the data from the file
+def load_inventory():
+    with open("inventory.dat", "rb") as file:
+        data = pickle.load(file)
+    return data
+
+#inventory_system_main takes one argument (list of inventory objects)
+#calls upon inventory_system functions
+#returns nothing
 def inventory_system_main(inventory):
+    #attempts to log in to inventory system
+    accounts = load_accounts()
+    log = login(accounts)
+    print()
+    #return if login fails
+    if not log:
+        print("Username or password is incorrect!")
+        return
+    
+    #stick in inventory system until exit
     while True:
+        #call function relative to user choice
         choice = get_choice(inventory_menu, 4)
-        #call choice
         [inventory_system_display, inventory_system_add, inventory_system_save, system_exit][choice](inventory)
 
+#inventory_system_display takes one argument (list of inventory objects)
+#displayes all the items in the inventory
+#outputs every item in the inventory
 def inventory_system_display(inventory):
+    #checks that inventory is not empty
     if len(inventory) > 0:
+        #print inventory
+        print("Inventory: ")
         for item in inventory:
             print(item)
+        print()
     else:
-        print("Inventory is empty")
+        #empty inventory statement
+        print("Inventory is empty\n")
 
+#inventory_system_add takes one argument (list of inventory objects)
+#adds an item to the inventory
+#returns nothing
 def inventory_system_add(inventory):
-    #create item
+    #user input name
     name = input("Enter a name: ")
+    
     #quantity validation
     while True:
         quantity = input(f"Enter amount of {name} in stock: ")
+        #check that it is a number
         if quantity.isnumeric():
+            #check that the number is > 0
             if int(quantity) > 0:
                 break
             else:
                 print("Amount must be > 0.")
         else:
             print("Amount must be a number.")
+            
     #price validation
     while True:
         price = input(f"Enter price of {name}: ")
+        #checks that string with one decimal removed a float
         if price.replace(".",  "", 1).isnumeric():
+            #checks that number is > 0
             if float(price) > 0:
                 break
             else:
@@ -96,22 +138,36 @@ def inventory_system_add(inventory):
         else:
             print("Amount must be a valid number.")
     
+    #creates a new item object
     item = RI(name, quantity, price)
+    
+    #add item object to list
     inventory.append(item)
 
+    print()
+
+#inventory_system_save takes one argument (list of inventory objects)
+#pickles the inventory list
+#outputs to inventory.dat file
 def inventory_system_save(inventory):
     with open("inventory.dat", "wb") as file:
         pickle.dump(inventory, file)
+        
 #----------------------------------------------------------------------------------------------------------#
 #Retail Store
-
+        
+#retail_store_main takes one argument (list of inventory objects)
+#calls upon retail system functions
+#returns nothing
 def retail_store_main(inventory):
     #create empty cart
     register = CR()
+    
+    #stay in retail store loop
     while True:
         choice = get_choice(retail_menu, 6)
-        #call choice
         loop = False
+        #call functions based on choice
         if choice == 1:
             inventory_system_display(inventory)
         elif choice == 2:
@@ -121,76 +177,173 @@ def retail_store_main(inventory):
         elif choice == 4:
             loop = retail_store_check_out(inventory, register)
         elif choice == 5:
-            loop = retail_system_exit(register)
+            loop = True
         elif choice == 0:
             retail_store_cart(register)
+            
         #test for loop break
         if loop:
             break
+
+    #return to main menu
     main()
 
+#retail_store_cart takes one argument (cash register object)
+#calls the registers show cart function to display the cart
+#returns nothing
 def retail_store_cart(register):
     register.show_cart()
 
+#retail_store_purchase takes two arguments (list of inventory objects, and the register object)
+#adds an item from the inventory to the cart
+#returns nothing
 def retail_store_purchase(inventory, register):
+    #display invenory
+    inventory_system_display(inventory)
+    
+    #continue buying items until user quits 
     while True:
+        #gets name of item from user
         key = input("What would you like to purchase? ")
+        
         for item in inventory:
+            #checks for item in inventory
             if item.get_name().lower() == key.lower():
+                #attempts to add item to cart
                 success = register.purchase_item(item)
+                
+                #if item was added to cart
                 if success:
-                    print(f"{key} have been added to the cart.")
+                    print(f"{key} added to the cart.")
+                #item failed to be added to cart
                 else:
                     print("We do not have enough of that item in stock!")
+                    
                 break
         else:
             print("Item not found!")
+        
+        #checks if user want to continue
         cont = input("Add another item? (y/n) ").lower()
         if cont == "n":
-            break
+            break  
+    print()
 
+#retail_store_clear takes one argument (register object)
+#emptys the cart of the register
+#prints validation messagae
 def retail_store_clear(register):
     register.empty()
-    print("Cleared the cart!")
+    print("Cleared the cart!\n")
 
+#retail_store_check_out takes two arguments (list of inventory objects, and the register object)
+#removes items in cart from inventory if check out is successful
+#returns true if the checkout was sucessful
 def retail_store_check_out(inventory, register):
+    #display items in cart
     register.show_cart()
-    complete = input("Enter Y to complete transaction and return to main menu.\nAny other key will clear the cart.").lower()
     
-    #remove from quantity
-    for item in register.get_cart():
-        newInventory = []
-        if item[0] in inventory:
-            index = inventory.index(item[0])
-            origional = inventory[index].get_quantity()
-            new = int(origional) - item[1]
-            if new > 0:
-                inventory[index].set_quantity(new)
-                newInventory.append(item[0])
-                
-        inventory_system_save(newInventory)
-        
+    #promts user to accept checkout
+    complete = input("Enter Y to complete transaction and return to main menu.\nAny other key will clear the cart.").lower()
+    print()
+    
+    #if user accepts checkout
     if complete == "y":
-        print("Purchase complete")
+        #decrease number of sold items from quantity
+        #loops through every item in the cart
+        for item in register.get_cart():
+            #creates a new inventory to remove empty items
+            newInventory = []
+            
+            #checks that item is in inventory
+            if item[0] in inventory:
+                #gets index of item in inventory list
+                index = inventory.index(item[0])
+                #gets origional quantity of item
+                origional = inventory[index].get_quantity()
+                #gets new quantity of item by subtracting by amount in cart
+                new = int(origional) - item[1]
+                
+                #checks that quantity of item is now > 0
+                if new > 0:
+                    #resets the quantity of the item
+                    inventory[index].set_quantity(new)
+                    #adds the item to the new inventory
+                    newInventory.append(item[0])      
+            #save the new inventory to the file
+            inventory_system_save(newInventory)
+        #validation message
+        print("Purchase complete\n")
         return True
     else:
+        #clear cart if user does not wish to checkout
         retail_store_clear(register)
 
 #----------------------------------------------------------------------------------------------------------#
-#inventory system
-def load_inventory():
-    with open("inventory.dat", "rb") as file:
-        data = pickle.load(file)
-    return data
+#passwords
+        
+#load_accounts takes no arguments
+#reads the accounts data from file
+#returns the account data
+def load_accounts():
+    with open("accounts.dat", "rb") as file:
+        accounts = pickle.load(file)
+    return accounts
+
+#login takes one argument (accounts data)
+#asks the user for a username and password
+#checks if password matches username from account data
+#returns true if username and password match account data
+def login(accounts):
+    #user inputs
+    username = input("Username: ")
+    password = input("Password: ")
+    
+    #checks that username exits
+    if username in accounts:
+        #gets user info
+        account = accounts[username]
+        #shifts the password
+        password = cypher(password, account[1])
+        #checks the password
+        if account[0] == password:
+            #successful login
+            return True
+    #unsuccessful login
+    return False
+
+#cypher takes two argumetns (a string to encrypt, and a number to shift it by)
+#encrypts a string for password validation
+#returns the encrypted string
+def cypher(string, shift):
+    shifted_string = "" #string to return placeholder
+    #creates an incomplete dictionary of items to shift
+    alphabet = [*"abdefhijkmnoprsuvyz023568!"]
+    #splits the string at the split point
+    shifted_alphabet = alphabet[shift:] + alphabet[:shift]
+    
+    #goes through every letter in the string
+    for letter in string:
+        #checks that letter exists in alphabet
+        if letter in alphabet:
+            #replace letter with letter in corrosponding possion of shifted string
+            index = shifted_alphabet.index(letter)
+            shifted_string += alphabet[index]
+        #if letter is not in string replaces it with the first letter in the shifted alphabet
+        else:
+            shifted_string += shifted_alphabet[0]
+    return shifted_string
 
 #----------------------------------------------------------------------------------------------------------#
 #exit
 
-def retail_system_exit(_arg):
-    return True
-
+#system_exit takes one argument (a throwaway argument for ease of coding)
+#prints exit message then ends the code
+#returns nothing
 def system_exit(_arg):
     print("Thank you for using the ACME Retail System")
     exit()
 
+
+#start code with main function
 main()
