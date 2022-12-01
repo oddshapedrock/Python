@@ -2,6 +2,8 @@ import pickle
 from random import randint
 
 #main takes no arguments
+#directs user to create or delete account functions
+#returns nothing
 def main():
     #main menu
     while True:
@@ -39,35 +41,51 @@ def create_account(accounts):
     while True:
         password = input("Enter a password: ")
         authenticator = input("Re-enter password: ")
+        
         #ensure password matches
         if password == authenticator:
             break
         print("\nPasswords do not match")
         
-    shift = randint(1, 32)
+    #hash the password
     password = hash(password)
-    
+    #save account to accounts dictionary
     accounts[username] = password
+    #write data to file
     save_data(accounts)
 
+#delete_account takes one argument (user accounts dictionary)
+#deletes a users account
+#returns nothing
 def delete_account(accounts):
+    #display accounts
     print("Accounts:")
     for account in accounts.keys():
         print(account)
+    
+    #get account to delete
     print("\nWhat would you like to delete? ")
     account = input(":: ")
+    
+    #ensure user input account exitst
     if account in accounts:
+        #delete the account and resave the file
         accounts.pop(account)
         save_data(accounts)
     else:
         print("Account not found.")
-    
+
+#save_data takes one argument (user accounts object)
+#saves the account data to the accounts.dat file
+#output data to the file
 def save_data(accounts):
     with open("accounts.dat", "wb") as file:
         pickle.dump(accounts, file)
-
+        
+#continuation loop
 while True:
     main()
     print()
+    #prompt user to continue
     if input("Continue. (y/n) ").lower() == "n":
         break
