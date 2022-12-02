@@ -1,5 +1,6 @@
 import pickle
 from random import randint
+import hashlib
 
 #main takes no arguments
 #directs user to create or delete account functions
@@ -46,11 +47,20 @@ def create_account(accounts):
         if password == authenticator:
             break
         print("\nPasswords do not match")
+    
+    #email authentication loop
+    print("!IMPORTANT EMAIL IS USED FOR 2 FACTOR AUTHENTICATION!")
+    while True:
+        email = input("Enter your email: ")
+        #simple incomplete email check
+        if email.count("@") == 1 and email.count(".") > 0:
+            break
+        print("Email does not match an email format")
         
     #hash the password
-    password = hash(password)
+    password = int(hashlib.sha1(password.encode("utf-8")).hexdigest(), 16) % (10 ** 8)
     #save account to accounts dictionary
-    accounts[username] = password
+    accounts[username] = [password, email]
     #write data to file
     save_data(accounts)
 

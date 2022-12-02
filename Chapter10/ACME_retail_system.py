@@ -1,12 +1,26 @@
-import pickle
 from RetailItem import RetailItem as RI
 from CashRegister import CashRegister as CR
+
+#file management
+import pickle
+
+#password encryption
+import hashlib
+
+#two factor
+import smtplib
+import ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from random import randint
 #----------------------------------------------------------------------------------------------------------#
 
 #ACME_retail_system is the stores management program
 
 #Has an inventory management system to manage the store inventory
 #Has a retail system to purchase items from the inventory
+
+#To access the retail management you will need to create and account with AccountManager.py!
 
 #----------------------------------------------------------------------------------------------------------#
 #menu system
@@ -88,6 +102,66 @@ def load_inventory():
     #returns the inventory
     return data
 
+
+#two_factor_auth takes one argument (the email recipient)
+#emails the recipient the auth code
+#returns the auth code
+def two_factor_auth(recipient):
+    #account info
+    #kdjsqlfjwklfewqf@outlook.com
+    #Ajkljgfalj!
+    
+    #generate Auth Code
+    code = randint(10000, 99999)
+    
+    #set up server
+    smtp_server = "smtp.outlook.com"
+    port = 587  # For starttls
+    sender_email = "kdjsqlfjwklfewqf@outlook.com"
+
+    # Create a secure SSL context
+    context = ssl.create_default_context()
+
+    # Try to log in to server and send email
+    try:
+        #create server
+        server = smtplib.SMTP(smtp_server,port)
+        server.starttls(context=context) # Secure the connection
+
+        server.login(sender_email, "Ajkljgfalj!")
+        
+        #esmail content
+        message = MIMEMultipart("alternative")
+        message["Subject"] = "2 Factor Authentication"
+        message["From"] = sender_email
+        message["To"] = recipient
+        #eamil body
+        html = f"""\
+            <html>
+              <body>
+                <p>Auth Code:<br>
+                   {code}
+                </p>
+              </body>
+            </html>
+            """
+        #add body to content
+        content = MIMEText(html, "html")
+        message.attach(content)
+        
+        #sent message
+        server.sendmail(sender_email, recipient, message.as_string())
+        
+    except Exception as e:
+        # Print any error messages to stdout
+        print(e)
+        
+    finally:
+        #close the server
+        server.quit() 
+    
+    return code
+
 #inventory_system_main takes one argument (list of inventory objects)
 #calls upon inventory_system functions
 #returns nothing
@@ -102,6 +176,18 @@ def inventory_system_main(inventory):
         main()
         return
     
+    #two factor authentication
+    print("Generating Auth...")
+    number = two_factor_auth(log)
+    print(f"Auth email sent to {log}")
+    auth = input("2 Factor Auth: ")
+    #incorect authentication entered
+    if not int(auth) == number:
+        print("Authenticaion failed!")
+        main()
+        return
+    
+    print()
     #stick in inventory system until exit
     while True:
         #call function relative to user choice
@@ -286,9 +372,10 @@ def retail_store_check_out(inventory, register):
     if complete == "y":
         #decrease number of sold items from quantity
         #loops through every item in the cart
+        #creates a new inventory to remove empty items
+        newInventory = []
+        
         for item in register.get_cart():
-            #creates a new inventory to remove empty items
-            newInventory = []
             
             #checks that item is in inventory
             if item[0] in inventory:
@@ -304,11 +391,15 @@ def retail_store_check_out(inventory, register):
                     #resets the quantity of the item
                     inventory[index].set_quantity(new)
                     #adds the item to the new inventory
-                    newInventory.append(item[0])      
-            #save the new inventory to the file
-            inventory_system_save(newInventory)
+                    newInventory.append(item[0])     
+        #save the new inventory to the file
+        inventory_system_save(newInventory)
         #validation message
         print("Purchase complete\n")
+        
+        #add non cart items to new inventory
+        
+        
         return True
     else:
         #clear cart if user does not wish to checkout
@@ -333,7 +424,7 @@ def load_accounts():
 #login takes one argument (accounts data)
 #asks the user for a username and password
 #checks if password matches username from account data
-#returns true if username and password match account data
+#returns email if username and password match account data
 def login(accounts):
     #user inputs
     username = input("Username: ")
@@ -344,11 +435,11 @@ def login(accounts):
         #gets user info
         account = accounts[username]
         #shifts the password
-        password = hash(password)
+        password = int(hashlib.sha1(password.encode("utf-8")).hexdigest(), 16) % (10 ** 8)
         #checks the password
-        if account == password:
+        if account[0] == password:
             #successful login
-            return True
+            return account[1]
     #unsuccessful login
     return False
 
