@@ -102,66 +102,6 @@ def load_inventory():
     #returns the inventory
     return data
 
-
-#two_factor_auth takes one argument (the email recipient)
-#emails the recipient the auth code
-#returns the auth code
-def two_factor_auth(recipient):
-    #account info
-    #kdjsqlfjwklfewqf@outlook.com
-    #Ajkljgfalj!
-    
-    #generate Auth Code
-    code = randint(10000, 99999)
-    
-    #set up server
-    smtp_server = "smtp.outlook.com"
-    port = 587  # For starttls
-    sender_email = "kdjsqlfjwklfewqf@outlook.com"
-
-    # Create a secure SSL context
-    context = ssl.create_default_context()
-
-    # Try to log in to server and send email
-    try:
-        #create server
-        server = smtplib.SMTP(smtp_server,port)
-        server.starttls(context=context) # Secure the connection
-
-        server.login(sender_email, "Ajkljgfalj!")
-        
-        #esmail content
-        message = MIMEMultipart("alternative")
-        message["Subject"] = "2 Factor Authentication"
-        message["From"] = sender_email
-        message["To"] = recipient
-        #eamil body
-        html = f"""\
-            <html>
-              <body>
-                <p>Auth Code:<br>
-                   {code}
-                </p>
-              </body>
-            </html>
-            """
-        #add body to content
-        content = MIMEText(html, "html")
-        message.attach(content)
-        
-        #sent message
-        server.sendmail(sender_email, recipient, message.as_string())
-        
-    except Exception as e:
-        # Print any error messages to stdout
-        print(e)
-        
-    finally:
-        #close the server
-        server.quit() 
-    
-    return code
-
 #inventory_system_main takes one argument (list of inventory objects)
 #calls upon inventory_system functions
 #returns nothing
@@ -262,15 +202,20 @@ def inventory_system_add(inventory):
 
         cont = input("Add another? (y/n) ").lower()
         if cont == "n":
+            #sort inventory alphabetically
+            inventory.sort(key=lambda x: x.get_name())
             print()
             break
-
+        
         print()
 
 #inventory_system_save takes one argument (list of inventory objects)
 #pickles the inventory list
 #outputs to inventory.dat file
 def inventory_system_save(inventory):
+    #stort inventory alphabetically
+    inventory.sort(key=lambda x: x.get_name())
+    #save
     with open("inventory.dat", "wb") as file:
         pickle.dump(inventory, file)
         
@@ -374,11 +319,12 @@ def retail_store_check_out(inventory, register):
         #loops through every item in the cart
         #creates a new inventory to remove empty items
         newInventory = []
-        
+        cartList = []
         for item in register.get_cart():
-            
             #checks that item is in inventory
             if item[0] in inventory:
+                #add item to list of items in cart
+                cartList.append(item[0])
                 #gets index of item in inventory list
                 index = inventory.index(item[0])
                 #gets origional quantity of item
@@ -391,7 +337,13 @@ def retail_store_check_out(inventory, register):
                     #resets the quantity of the item
                     inventory[index].set_quantity(new)
                     #adds the item to the new inventory
-                    newInventory.append(item[0])     
+                    newInventory.append(item[0])
+         
+        #add non inventory items to cart
+        for item in inventory:
+            if not item in cartList:
+                newInventory.append(item)
+                
         #save the new inventory to the file
         inventory_system_save(newInventory)
         #validation message
@@ -442,6 +394,65 @@ def login(accounts):
             return account[1]
     #unsuccessful login
     return False
+
+#two_factor_auth takes one argument (the email recipient)
+#emails the recipient the auth code
+#returns the auth code
+def two_factor_auth(recipient):
+    #account info
+    #kdjsqlfjwklfewqf@outlook.com
+    #Ajkljgfalj!
+    
+    #generate Auth Code
+    code = randint(10000, 99999)
+    
+    #set up server
+    smtp_server = "smtp.outlook.com"
+    port = 587  # For starttls
+    sender_email = "kdjsqlfjwklfewqf@outlook.com"
+
+    # Create a secure SSL context
+    context = ssl.create_default_context()
+
+    # Try to log in to server and send email
+    try:
+        #create server
+        server = smtplib.SMTP(smtp_server,port)
+        server.starttls(context=context) # Secure the connection
+
+        server.login(sender_email, "Ajkljgfalj!")
+        
+        #esmail content
+        message = MIMEMultipart("alternative")
+        message["Subject"] = "2 Factor Authentication"
+        message["From"] = sender_email
+        message["To"] = recipient
+        #eamil body
+        html = f"""\
+            <html>
+              <body>
+                <p>Auth Code:<br>
+                   {code}
+                </p>
+              </body>
+            </html>
+            """
+        #add body to content
+        content = MIMEText(html, "html")
+        message.attach(content)
+        
+        #sent message
+        server.sendmail(sender_email, recipient, message.as_string())
+        
+    except Exception as e:
+        # Print any error messages to stdout
+        print(e)
+        
+    finally:
+        #close the server
+        server.quit() 
+    
+    return code
 
 #----------------------------------------------------------------------------------------------------------#
 #exit
