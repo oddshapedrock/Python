@@ -6,4 +6,4 @@ async def callback(message):
     await message.channel.send("Pong!")
 
 def build():
-    return Command.Command("ping", "Pong!", callback)
+    return Command.Command("ping", "Pong!", callback, required_roles=["tole"])
