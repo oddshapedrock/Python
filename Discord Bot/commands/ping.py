@@ -5,5 +5,11 @@ import Command
 async def callback(message):
     await message.channel.send("Pong!")
 
-def build():
-    return Command.Command("ping", "Pong!", callback, required_roles=["tole"])
+async def init(tree):
+    @tree.command(name = "ping", description = "Pong!")
+    async def slashback(interaction):
+        return interaction.response.send_message("Pong!")
+    tree.sync()
+
+def build(tree):
+    return Command.Command("ping", "Pong!", "Takes 0 arguments", callback, tree, init, max_args = 0)
