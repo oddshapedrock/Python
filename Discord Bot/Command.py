@@ -10,6 +10,7 @@ class Command:
         self.required_roles = kwargs.get('required_roles', [])
         self.required_perms = kwargs.get('required_perms', [])
         self.init = init
+        self.tree = tree
         
     def __str__(self):
         return self.description
@@ -38,8 +39,8 @@ class Command:
     def get_help(self):
         return self.helfen
     
-    def run_init(self):
-        return self.init
+    async def call_init(self, guild):
+    	await self.init(self.tree, guild)
     
     async def call(self, message):
         await self.callback(message)

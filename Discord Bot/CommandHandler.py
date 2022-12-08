@@ -8,9 +8,9 @@ def toList(item):
 
 def main(Discord, client, tree):
     
-    sys.path.insert(1, f'{os.path.dirname(os.path.realpath(__file__))}\commands')
+    sys.path.insert(1, f'{os.path.dirname(os.path.realpath(__file__))}/commands')
      
-    root_dir = '.\commands'
+    root_dir = './commands'
     commandList = []
     for directory, subdirectories, files in os.walk(root_dir):
         sys.path.insert(1, f'{os.path.dirname(os.path.realpath(__file__))}{directory[1:]}')
@@ -19,7 +19,15 @@ def main(Discord, client, tree):
                 file = file.rstrip(".py")
                 command = importlib.import_module(file)
                 commandList.append(command.build(tree))
-    
+                
+    @client.event
+    async def on_ready():
+        for g in client.guilds:
+            for command in commandList:
+                await command.call_init(g)
+                await tree.sync(guild=Discord.Object(id=g.id))
+        print("Amazing Bot is ready")
+
     @client.event
     async def on_message(message):
         if not message.content.startswith("!") or message.author.bot:
@@ -72,7 +80,7 @@ def main(Discord, client, tree):
                         return await message.reply(f"{name} expects between {min_args} and ∞ arguments");
                     
                     return await message.reply(f"{name} expects between {min_args} and {max_args}");
-                command.run_init()
+                
                 return await command.call(message)
             
     @client.event

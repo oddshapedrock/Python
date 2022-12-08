@@ -17,11 +17,7 @@ tree = discord.app_commands.CommandTree(client)
 CommandHandler.main(discord, client, tree)
 
 #Bot is ready to recieve commands
-@client.event
-async def on_ready():
-    #initialize slash commands
-    await tree.sync()
-    print("AmazingBot is active")
+
 
 #activate the bot
 load_dotenv()
