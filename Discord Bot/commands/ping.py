@@ -1,10 +1,10 @@
 import sys, os
 import discord
 app_commands = discord.app_commands
-sys.path.insert(0, f"{os.path.dirname(__file__)}../")
+sys.path.insert(0, f"{os.path.dirname(__file__)}..\\")
 import Command
 
-async def callback(message):
+async def callback(message):    
     await message.channel.send("Pong!")
 
 async def init(tree, gld):

@@ -8,9 +8,9 @@ def toList(item):
 
 def main(Discord, client, tree):
     
-    sys.path.insert(1, f'{os.path.dirname(os.path.realpath(__file__))}/commands')
+    sys.path.insert(1, f'{os.path.dirname(os.path.realpath(__file__))}\\commands')
      
-    root_dir = './commands'
+    root_dir = '.\\commands'
     commandList = []
     for directory, subdirectories, files in os.walk(root_dir):
         sys.path.insert(1, f'{os.path.dirname(os.path.realpath(__file__))}{directory[1:]}')
@@ -25,7 +25,7 @@ def main(Discord, client, tree):
         for g in client.guilds:
             for command in commandList:
                 await command.call_init(g)
-                await tree.sync(guild=Discord.Object(id=g.id))
+            await tree.sync(guild=Discord.Object(id=g.id))
         print("Amazing Bot is ready")
 
     @client.event
@@ -49,7 +49,7 @@ def main(Discord, client, tree):
             
             for item in commands:
                 if not item.lower() == string[0].lower():
-                    return
+                    continue
                 
                 content = message.content
                 guild = message.guild
