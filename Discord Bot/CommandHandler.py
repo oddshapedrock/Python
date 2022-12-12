@@ -16,7 +16,7 @@ def main(Discord, client, tree):
         sys.path.insert(1, f'{os.path.dirname(os.path.realpath(__file__))}{directory[1:]}')
         for file in files:
             if file.endswith(".py"):
-                file = file.rstrip(".py")
+                file = file[:-3]
                 command = importlib.import_module(file)
                 commandList.append(command.build(tree))
                 
