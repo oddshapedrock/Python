@@ -13,3 +13,13 @@ async def display(message, ID, slash):
                 file.close()
         except Exception:
             await message.channel.send("You do not have a saved maze.\n Please use !newGame first")
+    else:
+        rel_path = "..\\maze_images\\i" + str(ID) + ".png"
+        abs_file_path = os.path.join(script_dir, rel_path)
+        try:
+            with open(abs_file_path, 'rb') as file:
+                picture = discord.File(file)
+                await message.channel.send(file=picture)
+                file.close()
+        except Exception:
+            await message.channel.send("You do not have a saved maze.\n Please use !newGame first")

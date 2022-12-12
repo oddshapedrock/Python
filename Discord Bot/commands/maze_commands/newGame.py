@@ -28,7 +28,7 @@ async def load_maze(message, interaction):
     generate_image.createMaze(file_name, True)
     await display_image.display(message, file_name, slash)
 
-async def callback(message):
+async def callback(message, client):
     await load_maze(message, False)
     await message.channel.send("Game created!")
 

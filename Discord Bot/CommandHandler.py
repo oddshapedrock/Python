@@ -81,8 +81,4 @@ def main(Discord, client, tree):
                     
                     return await message.reply(f"{name} expects between {min_args} and {max_args}");
                 
-                return await command.call(message)
-            
-    @client.event
-    async def on_interaction(interaction):
-        print(interaction)
+                return await command.call(message, client)

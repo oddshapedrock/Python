@@ -42,5 +42,5 @@ class Command:
     async def call_init(self, guild):
     	await self.init(self.tree, guild)
     
-    async def call(self, message):
-        await self.callback(message)
+    async def call(self, message, client):
+        await self.callback(message, client)
