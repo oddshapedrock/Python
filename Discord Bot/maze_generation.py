@@ -1,4 +1,3 @@
-"""# TODO: """
 import random
 
 __all__ = [
@@ -7,15 +6,18 @@ __all__ = [
 "generate_3d"
 ]
 
+#stores the maze generation functions
+#generates a dictionary containing the maze values
 class GenerateMaze():
-    '''Generates a maze of [width, height] size as a python dictionary'''
     def __init__(self):
         self.maze_size = [0, 0]
         self.grid_map = []
         self.snake = {"direction": 0, "location": [0, 0], "number": 1}
 
+    #generate takes one argument (the size of the maze as a list [x, y])
+    #main generation function creates a maze based on maze size
+    #returns the generated maze
     def generate(self, maze_size):
-        '''Generates a maze of [width, height] size as a python dictionary'''
         self.maze_size = maze_size
 
         self.grid_map = []
@@ -25,13 +27,17 @@ class GenerateMaze():
             self.grid_map.append([])
             #creates grid columns
             for y_pos in range(maze_size[1]):
+                #stores dictionary of generation values in grid map
                 self.grid_map[x_pos].append({
                     "walls": [True, True, True, True], #[top, bottom, left, right]
                     "visited": False,
                     "location": [x_pos, y_pos] #[top, bottom]
                     })
-
+                
+        #calls function to create maze path
         self.__make_path()
+        
+        #return completed maze
         return self.grid_map
 
     def __new_direction(self, possible_moves):
