@@ -40,65 +40,103 @@ class GenerateMaze():
         #return completed maze
         return self.grid_map
 
+    #__new_direction takes one argument (list of possible moves)
+    #choses a random direction to travel [0: up, 1: down, 2: left, 3: right]
+    #returns directin as a number or -1 if no directions exist
     def __new_direction(self, possible_moves):
-        """# TODO: """
+        #test if list is empty
         if possible_moves:
             random_number = random.randint(0, len(possible_moves) - 1)
             self.snake["direction"] = possible_moves[random_number]
         else:
             self.snake["direction"] = -1
 
+    #__get_pos takes two arguments (an x and a y position)
+    #returns the cell from the gridmap at the disired location
     def __get_pos(self, x_pos, y_pos):
-        """# TODO: """
         return self.grid_map[x_pos][y_pos]
 
+    #__get_possible_moves takes no arguments
+    #determines the possible directions of travel
+    #returns a list of the possible moves [0: up, 1: down, 2: left, 3: right]
     def __get_possible_moves(self):
-        """# TODO: """
         moves_list = []
         snake_x = self.snake["location"][0]
         snake_y = self.snake["location"][1]
+        
+        #checks if cell in direction is within grid
         if snake_y + 1 < self.maze_size[0]:
             dir_up = self.__get_pos(snake_x, snake_y +1)
+            #add direction to list
             if not dir_up["visited"]:
                 moves_list.append(0)
+                
+        #checks if cell in direction is within grid
         if snake_y -1 >= 0:
             dir_down = self.__get_pos(snake_x, snake_y -1)
+            #add direction to list
             if not dir_down["visited"]:
                 moves_list.append(1)
+                
+        #checks if cell in direction is within grid
         if snake_x -1 >= 0:
             dir_left = self.__get_pos(snake_x -1, snake_y)
+            #add direction to list
             if not dir_left["visited"]:
                 moves_list.append(2)
+                
+        #checks if cell in direction is within grid
         if snake_x + 1 < self.maze_size[0]:
             dir_right = self.__get_pos(snake_x +1, snake_y)
+            #add direction to list
             if not dir_right["visited"]:
                 moves_list.append(3)
+                
         return moves_list
 
+    #__new_visit takes 4 argumets ([x, y] location of current possition, x position of new location, y position of new location, [direction of trave, opposite of direction of travel])
+    #updates the cells in the maze and updates the snake location to the new location
+    #returns nothing
     def __new_visit(self, location, x_pos2, y_pos2, path):
         direction, opposite = path
+        #sets walls inbetween locations to false
         self.__get_pos(location[0], location[1])["walls"][direction] = False
-        self.__get_pos(x_pos2, y_pos2)["walls"][opposite] = False
+        self.__get_pos(x_pos2, y_pos2)["walls"][opposite] = False\
+        #sets new cell to visited
         self.__get_pos(x_pos2, y_pos2)["visited"] = True
+        #updates snake location
         self.snake["location"] = [x_pos2, y_pos2]
 
+    #__make_path takes no arguments
+    #generates the maze path
+    #returns nothing
     def __make_path(self):
-        """# TODO: """
         starting_location = [0, 0]
         self.__get_pos(starting_location[0], starting_location[1])["visited"] = True
+        
+        #lists of all visisted locations
         saved_locations = [starting_location]
+        
+        #set up the snake
         snake = self.snake
         snake["location"] = starting_location
         index = 0
+        
+        #creates number of times to loop = maze size -1
         loop_number = (self.maze_size[0] * self.maze_size[1]) -1
+        
+        #visit cells
         for _ in range(loop_number):
+            #get a direction
             self.__new_direction(self.__get_possible_moves())
+            #back tracks cells until a move is possible
             while self.snake["direction"] == -1:
                 if index == 0:
                     random.shuffle(saved_locations)
                 self.snake["location"] = saved_locations[index]
                 self.__new_direction(self.__get_possible_moves())
                 index += 1
+            #call visits based on the snakes new location
             location = snake["location"]
             if snake["direction"] == 0:
                 self.__new_visit(location, location[0], location[1] + 1, [0, 1])
@@ -108,128 +146,9 @@ class GenerateMaze():
                 self.__new_visit(location, location[0] -1, location[1], [2, 3])
             if snake["direction"] == 3:
                 self.__new_visit(location, location[0] +1, location[1], [3, 2])
+            #add location to saved locations
             saved_locations.append(snake["location"])
 
-    def generate_3d(self, maze_size):
-        """ #TODO: """
-        self.maze_size = maze_size
-
-        self.grid_map = []
-
-        for z_pos in range(maze_size[2]):
-            self.grid_map.append([])
-            #creates grid columns
-            for x_pos in range(maze_size[0]):
-                self.grid_map[z_pos].append([])
-                for y_pos in range(maze_size[1]):
-                    self.grid_map[z_pos][x_pos].append({
-                        "walls": [True, True, True, True, True, True], #[forward, backward, left, right, up, down]
-                        "visited": False,
-                        "location": [z_pos, x_pos, y_pos] #[top, bottom]
-                        })
-
-        self.__make_path_3d()
-        return self.grid_map
-    
-    def __get_pos_3d(self, z_pos, x_pos, y_pos):
-        return self.grid_map[z_pos][x_pos][y_pos]
-    
-    def __get_possible_moves_3d(self):
-        """# TODO: """
-        moves_list = []
-        snake_x = self.snake["location"][1]
-        snake_y = self.snake["location"][2]
-        snake_z = self.snake["location"][0]
-        if snake_y + 1 < self.maze_size[1]:
-            dir_forward = self.__get_pos_3d(snake_z, snake_x, snake_y +1)
-            if not dir_forward["visited"]:
-                moves_list.append(0)
-        if snake_y -1 >= 0:
-            dir_back = self.__get_pos_3d(snake_z, snake_x, snake_y -1)
-            if not dir_back["visited"]:
-                moves_list.append(1)
-        if snake_x -1 >= 0:
-            dir_left = self.__get_pos_3d(snake_z, snake_x  -1, snake_y)
-            if not dir_left["visited"]:
-                moves_list.append(2)
-        if snake_x + 1 < self.maze_size[0]:
-            dir_right = self.__get_pos_3d(snake_z, snake_x +1, snake_y)
-            if not dir_right["visited"]:
-                moves_list.append(3)
-        if snake_z + 1 < self.maze_size[2]:
-            dir_up = self.__get_pos_3d(snake_z +1, snake_x, snake_y)
-            if not dir_up["visited"]:
-                moves_list.append(4)
-        if snake_z -1 >= 0:
-            dir_down = self.__get_pos_3d(snake_z -1, snake_x, snake_y)
-            if not dir_down["visited"]:
-                moves_list.append(5)
-        return moves_list
-    
-    def __new_visit_3d(self, location, location2, path):
-        direction, opposite = path
-        self.__get_pos_3d(location[0], location[1], location[2])["walls"][path[0]] = False
-        self.__get_pos_3d(location2[0], location2[1], location2[2])["walls"][path[1]] = False
-        self.__get_pos_3d(location2[0], location2[1], location2[2])["visited"] = True
-        self.snake["location"] = [location2[0], location2[1], location2[2]]
-    
-    def __make_path_3d(self):
-        """# TODO: """
-        starting_location = [0, 0, 0]
-        self.__get_pos_3d(starting_location[0], starting_location[1], starting_location[2])["visited"] = True
-        saved_locations = [starting_location]
-        snake = self.snake
-        snake["location"] = starting_location
-        index = 0
-        loop_number = (self.maze_size[0] * self.maze_size[1] * self.maze_size[2]) - 1
-        for _ in range(loop_number):
-            self.__new_direction(self.__get_possible_moves_3d())
-            while self.snake["direction"] == -1:
-                if index == 0:
-                    random.shuffle(saved_locations)
-                self.snake["location"] = saved_locations[index]
-                self.__new_direction(self.__get_possible_moves_3d())
-                index += 1
-            location = snake["location"]
-            location2 = [location[0], location[1], location[2]]
-            if snake["direction"] == 0:
-                location2[2] += 1
-                directions = [0, 1]
-            if snake["direction"] == 1:
-                location2[2] -= 1
-                directions = [1, 0]
-            if snake["direction"] == 2:
-                location2[1] -= 1
-                directions = [2, 3]
-            if snake["direction"] == 3:
-                location2[1] += 1
-                directions = [3, 2]
-            if snake["direction"] == 4:
-                location2[0] += 1
-                directions = [4, 5]
-            if snake["direction"] == 5:
-                location2[0] -= 1
-                directions = [5, 4]
-            self.__new_visit_3d(location, location2, directions)
-            saved_locations.append(snake["location"])
-
-    def generate_tiny(self, maze_size):
-        """# TODO: """
-        tiny_map = []
-        grid_map = generate(maze_size)
-        for index, grid in enumerate(grid_map):
-            tiny_map.append([])
-            for cell in grid:
-                string = ""
-                for index2 in range(4):
-                    if cell["walls"][index2]:
-                        string += "1"
-                    else:
-                        string += "0"
-                tiny_map[index].append(string)
-        return tiny_map  
-
+#create variables to call
 _inst = GenerateMaze()
 generate = _inst.generate
-generate_tiny = _inst.generate_tiny
-generate_3d = _inst.generate_3d
